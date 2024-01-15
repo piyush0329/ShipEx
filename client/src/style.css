@@ -1,0 +1,11 @@
+
+.page-content .heading:after {
+        content:'';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        min-width: 100px;
+        background-color: #faa21b;   
+}
+    

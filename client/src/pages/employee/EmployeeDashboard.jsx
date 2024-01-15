@@ -1,0 +1,33 @@
+import React from 'react'
+import { useAuth } from '../../context/auth'
+import EmployeeMenu from './EmployeeMenu'
+
+const EmployeeDashboard = () => {
+    const [auth] = useAuth()
+    return (
+        <div className="container-fluid p-3 dashboard">
+            <div className="row">
+                <div className="col-md-3">
+                    <EmployeeMenu />
+                </div>
+                <div className="col-md-9">
+                    <div className="card w-75 p-3">
+                        <h4 className='text-center'>Employee Details</h4>
+                        <h5>Employee Name: {auth?.user?.name}</h5>
+                        <h5>Employee Email: {auth?.user?.email}</h5>
+                        <h5>Employee Class: {auth?.user?.classname}</h5>
+                        <h5>Employee Phone: {auth?.user?.phone}</h5>
+                        <h5>Employee Gender: {auth?.user?.gender}</h5>
+                        <h5>Employee roll: {auth?.user?.roll}</h5>
+                        <h5>Employee roll: {auth?.employee?.aadharNumber}</h5>
+                        <h5>Employee Aadhar Card Number: {auth?.employee?.aadharNumber}</h5>
+                        <h5>Employee Driving License Number: {auth?.employee?.dlNumber}</h5>
+                        <h5>Employee Address: {auth?.employee?.address}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default EmployeeDashboard
