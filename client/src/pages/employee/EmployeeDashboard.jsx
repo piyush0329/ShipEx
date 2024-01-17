@@ -5,13 +5,13 @@ import EmployeeMenu from './EmployeeMenu'
 const EmployeeDashboard = () => {
     const [auth] = useAuth()
     return (
-        <div className="container-fluid p-3 dashboard">
+        <div className="container-fluid p-3 dashboard tw-bg-lightGrey">
             <div className="row">
                 <div className="col-md-3">
                     <EmployeeMenu />
                 </div>
                 <div className="col-md-9">
-                    <div className="card w-75 p-3">
+                    <div className="card w-75 p-3 tw-bg-light">
                         <h4 className='text-center'>Employee Details</h4>
                         <h5>Employee Name: {auth?.user?.name}</h5>
                         <h5>Employee Email: {auth?.user?.email}</h5>

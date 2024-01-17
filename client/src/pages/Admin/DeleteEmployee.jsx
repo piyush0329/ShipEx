@@ -31,7 +31,7 @@ const DeleteEmployee = () => {
                     <div className="mb-3">
                         <label className="form-label d-block">Employee Email address</label>
                         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control w-75 d-inline" />
-                        <button type='submit' className="btn btn-secondary mx-2" >Delete Employee</button>
+                        <button type='submit' className="tw-btn tw-btn-outline tw-bg-red text-white tw-rounded-xl mx-2" >Delete Employee</button>
                     </div>
                 </div>
             </form>

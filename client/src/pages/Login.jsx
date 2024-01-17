@@ -40,7 +40,7 @@ const Login = () => {
     }
 
     return (
-        <div className='d-flex flex-column'>
+        <div className='d-flex flex-column tw-bg-lightGrey'>
             <h1 className='text-center'>Login</h1>
 
             <div className='border'>

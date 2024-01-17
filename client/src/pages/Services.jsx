@@ -70,7 +70,7 @@ const Services = () => {
         }
     }
     return (
-        <div>
+        <div className='tw-bg-lightGrey'>
             <section className="page-header page-header-modern page-header-background page-header-background-md overlay overlay-color-dark overlay-show overlay-op-2" style={{ backgroundImage: 'none', backgroundColor: '#0E2C53' }}>
                 <div className="container">
                     <div className="row ">
@@ -110,7 +110,7 @@ const Services = () => {
                     </p>
                 </div>
             </div>
-            <div className="card text-bg-light mb-3">
+            <div className="card text-bg-light">
                 <div className="card-header text-center display-6"><strong>Book Shipment</strong></div>
                 <div className="card-body text-center">
                     <div className='row'>

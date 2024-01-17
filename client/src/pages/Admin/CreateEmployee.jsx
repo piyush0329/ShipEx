@@ -40,14 +40,14 @@ const CreateEmployee = () => {
     }
 
     return (
-        <div className='container-fluid p-3 dashboard'>
+        <div className='container-fluid p-3 dashboard tw-bg-lightGrey'>
 
             <div className='row'>
                 <div className='col-md-3'>
                     <AdminMenu />
                 </div>
                 <div className='col-md-9'>
-                    <div className='card p-3'>
+                    <div className='card p-3 tw-bg-light'>
                         <h4 className='text-center'>Create Employee</h4>
                         <div className='d-flex flex-column'>
                             <div className=''>
@@ -100,7 +100,7 @@ const CreateEmployee = () => {
                                         <label className="form-label">Password</label>
                                         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control" />
                                     </div>
-                                    <button type="submit" className="btn btn-secondary">Create Employee</button>
+                                    <button type="submit" className="tw-btn tw-btn-outline tw-bg-red text-white tw-rounded-xl">Create Employee</button>
                                 </form>
                             </div>
                         </div >

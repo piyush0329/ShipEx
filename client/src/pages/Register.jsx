@@ -34,7 +34,7 @@ const Register = () => {
     }
 
     return (
-        <div className='d-flex flex-column'>
+        <div className='d-flex flex-column tw-bg-lightGrey'>
             <h1 className='text-center'>Register</h1>
 
             <div className='border'>

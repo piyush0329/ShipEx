@@ -77,13 +77,13 @@ const UserUpdate = () => {
 
     }
     return (
-        <div className='container-fluid p-3 dashboard'>
+        <div className='container-fluid p-3 dashboard tw-bg-lightGrey'>
             <div className='row'>
                 <div className='col-md-3'>
                     <AdminMenu />
                 </div>
                 <div className='col-md-9'>
-                    <div className='card p-3'>
+                    <div className='card p-3 tw-bg-light'>
                         <h4 className='text-center'>Update User Details</h4>
                         <div className='d-flex flex-column'>
                             <div className='d-flex'>
@@ -110,7 +110,7 @@ const UserUpdate = () => {
                                             <div className="mb-3">
                                                 <label className="form-label d-block">User Email address</label>
                                                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control w-75 d-inline" />
-                                                <button onClick={fetchUser} className='btn btn-secondary mx-2' >Find User</button>
+                                                <button onClick={fetchUser} className='tw-btn tw-btn-outline tw-bg-red text-white tw-rounded-xl mx-2' >Find User</button>
                                             </div>
                                             <div className="mb-3">
                                                 <label className="form-label">Name</label>
@@ -155,7 +155,7 @@ const UserUpdate = () => {
                                                     <div className="mb-3">
                                                         <label className="form-label d-block">User Email address</label>
                                                         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control w-75 d-inline" />
-                                                        <button type='submit' className="btn btn-secondary mx-2" >Delete User</button>
+                                                        <button type='submit' className="tw-btn tw-btn-outline tw-bg-red text-white tw-rounded-xl mx-2" >Delete User</button>
                                                     </div>
                                                 </div>
                                             </form>

@@ -17,7 +17,7 @@ const OrderDetails = () => {
     let [page, setPage] = useState()
     const [totalPages, setTotalPages] = useState(1)
     const [params, setParams] = useState({ limit: limit, page: 1 })
-    
+
 
     const pageButtons = Array.from({ length: totalPages }, (_, index) => index + 1);
 
@@ -50,34 +50,36 @@ const OrderDetails = () => {
         }
     }
 
-    const handleExport =async ()=>{
+    const handleExport = async () => {
         try {
-            const { data } = await axios.get(`/excel-worksheet`, {
+            const {data} =await axios.get(`/excel-worksheet`, {
                 params: {
                     ...params
                 }
             });
+            if(data.success){
+                alert('File Exported Successfully')
+            }else{
+                alert('Problem in Exporting File')
+            }
+            
         } catch (error) {
             console.error(error);
         }
-
-
-
     }
-
-
     useEffect(() => {
         if (auth?.token) {
             getOffices()
         }
         // eslint-disable-next-line
     }, [auth?.token])
+    
     useEffect(() => {
         filterSubmit(page);
         // eslint-disable-next-line
     }, [page]);
     return (
-        <>
+        <div className='container-fluid tw-bg-lightGrey'>
             <div className="row">
                 <div className="col col-md-3">
                     <AdminMenu />
@@ -85,7 +87,7 @@ const OrderDetails = () => {
                 <div className="col col-md-9">
                     <div className=''>
                         <h1 className='text-center'>Order Details</h1>
-                        <div className='border shadow table-responsive-sm table-responsive-md'>
+                        <div className='border shadow table-responsive-sm table-responsive-md tw-table-auto tw-rounded-xl tw-bg-white'>
 
                             <table className='tw-table'>
                                 <thead className='tw-text-lg text-white tw-bg-red'>
@@ -145,17 +147,17 @@ const OrderDetails = () => {
                                     </tr>
                                 </tbody>
                             </table>
-                            <button type='button' onClick={filterSubmit} className='btn btn-secondary'>Filter</button>
-                            <button type='button' onClick={handleExport} className='btn btn-secondary mx-2'>Export</button>
+                            <button type='button' onClick={filterSubmit} className='tw-btn tw-btn-outline tw-bg-red text-white tw-rounded-xl'>Filter</button>
+                            <button type='button' onClick={handleExport} className='tw-btn tw-btn-outline tw-bg-red text-white tw-rounded-xl mx-2'>Export</button>
 
                         </div>
                         <br />
                         <br />
                         {orders?.map((o, i) => {
                             return (
-                                <div key={o._id} className="border shadow table-responsive-sm table-responsive-md">
-                                    <table className="table">
-                                        <thead>
+                                <div key={o._id} className="border table-responsive-sm table-responsive-md shadow tw-rounded-xl mb-2 tw-bg-white">
+                                    <table className="tw-table">
+                                        <thead className='tw-text-lg text-white tw-bg-red'>
                                             <tr>
                                                 <th scope="col">#</th>
                                                 <th scope="col">Status</th>
@@ -180,29 +182,32 @@ const OrderDetails = () => {
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <div className="container">
-                                        {o?.products?.map((p, i) => (
-                                            <div className="row mb-2 p-3 card flex-row" key={p._id}>
-                                                <div className="col-md-8">
+
+                                    <div className=''>
+                                        {
+                                            o?.products?.map((p, i) => (
+                                                <div className="mb-2 p-3" key={p._id}>
                                                     <p><strong>Description: </strong> {p.description.substring(0, 30)}</p>
                                                     <p><strong>Start Location: </strong>{p.startLocation.officeName}</p>
                                                     <p><strong>Destination Location: </strong>{p.destinationLocation.officeName}</p>
                                                     <p><strong>Shipment Value: </strong>{p.shipmentValue}</p>
                                                     <p><strong>Shipping Price: </strong>{p.price}</p>
+
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))
+                                        }
+
                                     </div>
                                 </div>
                             );
                         })}
                         <br />
-                        <div className="tw-join text-center">
+                        <div className="tw-join text-center ">
                             {pageButtons.map((pageNumber) => (
                                 <button
                                     key={pageNumber}
                                     onClick={() => setPage(pageNumber)}
-                                    className={`tw-join-item tw-btn ${pageNumber === page ? 'tw-btn-active' : ''}`}
+                                    className={`tw-join-item tw-btn tw-bg-white ${pageNumber === page ? 'tw-btn-active' : ''}`}
                                 >
                                     {pageNumber}
                                 </button>
@@ -215,7 +220,7 @@ const OrderDetails = () => {
 
 
 
-        </>
+        </div>
     )
 }
 

@@ -17,26 +17,35 @@ const Orders = () => {
     }
   }
   useEffect(() => {
-    if (auth?.token) { 
+    if (auth?.token) {
       getOrders()
     }
-// eslint-disable-next-line
+    // eslint-disable-next-line
   }, [auth?.token])
+
+  const generateInvoice = async (o) => {
+    try {
+      const { data } = await axios.post('/invoice-generate', { o })
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
 
 
   return (
-    <div>      
-      <div className="container-fluid p-3 m-3">
+    <div>
+      <div className="container-fluid p-3 tw-bg-lightGrey">
         <div className="row">
-          
+
           <div className="col-md-12">
             <h1 className='text-center'>All Orders</h1>
             {
               orders?.map((o, i) => {
                 return (
-                  <div key={o._id} className='border shadow'>
-                    <table className='table'>
-                      <thead>
+                  <div key={o._id} className='border table-responsive-sm table-responsive-md tw-rounded-xl shadow mt-2 tw-bg-white'>
+                    <table className='tw-table'>
+                      <thead className='tw-text-lg text-white tw-bg-red'>
                         <tr>
                           <th scope='col'>#
                           </th>
@@ -80,17 +89,25 @@ const Orders = () => {
                         </tr>
                       </tbody>
                     </table>
-                    <div className="container">
-                      {o?.products?.map((p, i) => (
-                        <div className="row mb-2 p-3 card flex-row" key={p._id}>
+                    <div className="container-fluid">
+                      {o?.products?.map((p, i) => (<>
+                        <div className="row flex-row" key={p._id}>
                           <div className="">
                             <p><strong>{p.description}</strong></p>
                             <p>Weight: {p.weight}kg</p>
                             <p>Shipment Value: ₹{p.shipmentValue}</p>
+                            <p>Start Location: {p.startLocation.officeName}</p>
+                            <p>Destination Location: {p.destinationLocation.officeName}</p>
                             <p><strong>Shipping Charge : ₹{p.price}</strong></p>
                           </div>
                         </div>
+                      </>
                       ))}
+                    </div>
+                    <div>
+
+                      {(o.status === "Delivered") ? <button onClick={() => generateInvoice(o)} className='tw-btn tw-bg-red tw-text-white'>Generate Invoice</button> : ""
+                      }
                     </div>
                   </div>
                 )

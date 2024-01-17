@@ -57,16 +57,16 @@ const AdminUpdate = () => {
 
     return (
         <div>
-            <div className="container-fluid p-3 dashboard">
+            <div className="container-fluid p-3 dashboard tw-bg-lightGrey">
                 <div className="row">
                     <div className="col-md-3">
                         <AdminMenu />
                     </div>
                     <div className="col-md-9">
-                        <div className="card p-3">
+                        <div className="card p-3 tw-bg-light">
                             <h4 className='text-center'>Update Admin Details</h4>
                             <div className='d-flex flex-column'>
-                                <div className='border'>
+                                <div className=''>
                                     <form onSubmit={handleAdminUpdate}>
                                         <div className="mb-3">
                                             <label className="form-label">Email address</label>
@@ -112,7 +112,7 @@ const AdminUpdate = () => {
                                             <label className="form-label">Password</label>
                                             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control" />
                                         </div>
-                                        <button type="submit" className="btn btn-secondary">Update</button>
+                                        <button type="submit" className="tw-btn tw-btn-outline tw-bg-red text-white tw-rounded-xl">Update</button>
                                     </form>
                                 </div>
                             </div >

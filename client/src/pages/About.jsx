@@ -3,7 +3,7 @@ import '../index.css'
 const About = () => {
   return (
     <div>
-      <div className='container-fluid'>
+      <div className='container-fluid tw-bg-lightGrey'>
         <h1>About Us</h1>
         <div className=''>
           <div>

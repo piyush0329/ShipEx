@@ -57,7 +57,7 @@ const UpdateDetails = () => {
         }
     }
     return (
-        <div>
+        <div className='tw-bg-lightGrey'>
             <div className='row'>
                 <div className="col col-md-3">
                     <EmployeeMenu/>

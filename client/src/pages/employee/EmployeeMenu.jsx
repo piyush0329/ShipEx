@@ -9,17 +9,17 @@ const EmployeeMenu = () => {
           <div className='list-group-item bg-secondary text-white'><h4>Employee Panel</h4></div>
           <Link
             to="/dashboard/employee"
-            className="list-group-item list-group-item-action">
+            className="list-group-item list-group-item-action tw-bg-lightpink">
             Employee Details
           </Link>
           <Link
             to="/dashboard/employee/update-employee"
-            className="list-group-item list-group-item-action">
+            className="list-group-item list-group-item-action tw-bg-lightpink">
             Update Employee Details
           </Link>
           <Link
             to="/dashboard/employee/order-status"
-            className="list-group-item list-group-item-action">
+            className="list-group-item list-group-item-action tw-bg-lightpink">
             Update Order Status
           </Link>
 

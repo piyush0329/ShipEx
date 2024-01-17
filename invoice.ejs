@@ -1,0 +1,107 @@
+<!-- invoice-template.ejs -->
+
+<html>
+<head>
+    <title>Invoice</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        /* Additional styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        header {
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+       
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #ddafaf;
+        }
+        .total {
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+        }
+        .bg {
+            background-color: red;
+            color:white;
+        }
+        .gap{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="bg">Invoice</h1>
+    </header>
+    <br>
+    <p>Invoice Number: <%= invoiceNumber %></p>
+    <p>Date: <%= moment().format('DD-MM-YYYY') %></p>
+
+    <div class="d-flex justify-content-between">
+        <div class="float-start">
+
+            <strong>Company: </strong><br>
+            <strong>ShipEx Corp</strong><br>
+            It Park<br>
+            Dehradun, 248013<br>
+            India
+        </div>
+    
+        <div class="float-end">
+            <strong>Customer:</strong><br>
+            <strong><%= buyer.name %></strong><br>
+            <%= buyer.phone %><br>
+            <%= buyer.email %><br>
+            
+        </div>
+    </div>
+<div class="gap">
+
+</div>
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Start </th>
+                <th>Destination </th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% products.forEach(product => { %>
+                <tr>
+                    <td><%= product.description %></td>
+                    <td><%= 1 %></td>
+                    <td><%= product.startLocation.officeName %></td>
+                    <td><%= product.destinationLocation.officeName %></td>
+                    <td>₹<%= product.price %></td>
+                    <td>₹<%= product.price %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+    <p class="total">Total Amount: ₹<%= order.totalAmount %></p>
+
+    <!-- Other parts of the template -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
+

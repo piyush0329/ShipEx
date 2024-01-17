@@ -1,5 +1,14 @@
 const orderModel = require("../Models/orderModel")
 const ExcelJs = require('exceljs')
+const easyinvoice = require('easyinvoice');
+const fs = require('fs')
+const pdf = require('html-pdf')
+const moment = require('moment')
+const ejs = require('ejs');
+const path = require('path');
+const userModel = require("../Models/userModel");
+
+
 
 
 const addOrderController = async (req, res) => {
@@ -50,8 +59,14 @@ const getBuyerOrders = async (req, res) => {
 }
 const getAllOrdersController = async (req, res) => {
     try {
-        const orders = await orderModel.find({}).populate("buyer", "name").sort({ createdAt: -1 })
-        res.json(orders)
+        const {page,limit} = req.query
+        const orders = await orderModel.find({}).skip((page - 1) * limit).limit(limit).populate("buyer", "name").sort({ createdAt: -1 })
+        const orderlength = (await orderModel.find({}).populate("buyer", "name").sort({ createdAt: -1 })).length
+        res.status(200).send({
+            success: true,
+            orders,
+            orderlength
+        })
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -66,16 +81,16 @@ const getAllOrdersController = async (req, res) => {
 const getPaginationOrderController = async (req, res) => {
     try {
         const { page, limit, status, payment, source, destination } = req.query
-        const filters = { }
+        const filters = {}
         if (status) filters.status = status
         if (payment) filters.payment = payment
         if (source) filters["products.startLocation.officeName"] = source
         if (destination) filters["products.destinationLocation.officeName"] = destination
-        const orderlength =  (await orderModel.find(filters).populate("buyer", "name").sort({ createdAt: -1 })).length
-        const orders =  (await orderModel.find(filters).skip((page - 1) * limit).limit(limit).populate("buyer", "name").sort({ createdAt: -1 }))
+        const orderlength = (await orderModel.find(filters).populate("buyer", "name").sort({ createdAt: -1 })).length
+        const orders = (await orderModel.find(filters).skip((page - 1) * limit).limit(limit).populate("buyer", "name").sort({ createdAt: -1 }))
 
         res.status(200).send({
-            success:true,
+            success: true,
             orderlength,
             orders
         })
@@ -89,40 +104,39 @@ const getPaginationOrderController = async (req, res) => {
     }
 }
 
-const getExcelSheetController = async (req,res)=>{
+const getExcelSheetController = async (req, res) => {
     try {
         const { status, payment, source, destination } = req.query
-        const filters = { }
+        const filters = {}
         if (status) filters.status = status
         if (payment) filters.payment = payment
         if (source) filters["products.startLocation.officeName"] = source
         if (destination) filters["products.destinationLocation.officeName"] = destination
-        const orders =  (await orderModel.find(filters).populate("buyer", "name").sort({ createdAt: -1 }))
+        const orders = (await orderModel.find(filters).populate("buyer", "name").sort({ createdAt: -1 }))
 
         const workbook = new ExcelJs.Workbook()
         const worksheet = workbook.addWorksheet('orders')
-        worksheet.columns=[
-            {header:'S.no',key:'s_no',width:5},
-            {header:'Buyer Name',key:'buyer_name',width:20},
-            {header:'Status',key:'status',width:10},
-            {header:'Payment',key:'payment',width:15},
-            {header:'Total Amount',key:'totalAmount',width:15},
-   
+        worksheet.columns = [
+            { header: 'S.no', key: 's_no', width: 5 },
+            { header: 'Buyer Name', key: 'buyer_name', width: 20 },
+            { header: 'Status', key: 'status', width: 10 },
+            { header: 'Payment', key: 'payment', width: 15 },
+            { header: 'Total Amount', key: 'totalAmount', width: 15 },
         ]
-        let count=1
-        orders.forEach(order=>{
-            order.s_no =count
-            order.buyer_name=order.buyer.name
+        let count = 1
+        orders.forEach(order => {
+            order.s_no = count
+            order.buyer_name = order.buyer.name
             worksheet.addRow(order)
-            count+=1
+            count += 1
         })
-        worksheet.getRow(1).eachCell((cell)=>{
-            cell.font={bold:true}
+        worksheet.getRow(1).eachCell((cell) => {
+            cell.font = { bold: true }
         })
         const data = await workbook.xlsx.writeFile('order.xlsx')
 
         res.status(200).send({
-            success:true,
+            success: true,
             data
         })
     } catch (error) {
@@ -187,6 +201,42 @@ const employeeOrderStatusController = async (req, res) => {
     }
 }
 
+const getInvoiceController = async (req, res) => {
+    try {
+        const { o } = req.body
+        const buyer  = await userModel.findOne({_id:o.buyer})
+        const invoiceData = {
+            invoiceNumber: `${o._id}${moment().format('DDMMYYYY')}`,
+            products: o.products,
+            order: o,
+            buyer:buyer  
+        }        
+        const template = await ejs.renderFile('invoice.ejs', { ...invoiceData, moment })
+        const pdfOptions = { format: 'Letter' }
+         pdf.create(template, pdfOptions).toFile('invoice.pdf', (err, result) => {
+            if (err) {
+                console.error('Error creating PDF:', err)
+                res.status(500).send({
+                    success: false,
+                    message: 'Error creating PDF',
+                    error: err.message,
+                });
+            } else {
+                console.log('PDF created successfully:', result)
+                res.sendFile('invoice.pdf', { root:'C:\\Users\\HSTPL_LAP_008\\Documents\\Learnings\\ShipEx' })
+            }
+        });
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: "error while getting invoice",
+            error
+        })
+    }
+}
+
 
 module.exports.addOrderController = addOrderController
 module.exports.getBuyerOrders = getBuyerOrders
@@ -196,4 +246,5 @@ module.exports.getEmployeeAllOrdersController = getEmployeeAllOrdersController
 module.exports.orderStatusController = orderStatusController
 module.exports.employeeOrderStatusController = employeeOrderStatusController
 module.exports.getExcelSheetController = getExcelSheetController
+module.exports.getInvoiceController = getInvoiceController
 

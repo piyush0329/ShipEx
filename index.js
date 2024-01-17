@@ -5,7 +5,7 @@ const { registerController, loginController, updateProfileController, loadUserCo
 const { requireSignIn, isAdmin, isEmployee, isUser } = require('./middleware/authMiddleware')
 const { createOfficeController, getOfficeController } = require('./controller/officeController')
 const { getPriceController, addProductController, getProductController, deleteSingleProductController, deleteProductsController } = require('./controller/productController')
-const { addOrderController, getBuyerOrders, getAllOrdersController, orderStatusController, getEmployeeAllOrdersController, employeeOrderStatusController, getPaginationOrderController, getStatusOrdersController, getExcelSheetController } = require('./controller/orderController')
+const { addOrderController, getBuyerOrders, getAllOrdersController, orderStatusController, getEmployeeAllOrdersController, employeeOrderStatusController, getPaginationOrderController, getStatusOrdersController, getExcelSheetController, getInvoiceController } = require('./controller/orderController')
 
 
 const app = express()
@@ -83,12 +83,14 @@ app.delete('/delete-products/:userid', requireSignIn, deleteProductsController)
 
 app.post('/add-orders', requireSignIn, addOrderController)
 app.get('/get-orders/:buyerid', requireSignIn, getBuyerOrders)
+app.get('/all-orders', requireSignIn,isAdmin, getAllOrdersController)
 app.get('/employee-all-orders', requireSignIn, isEmployee, getEmployeeAllOrdersController)
 app.put('/order-status/:orderId', requireSignIn, isAdmin, orderStatusController)
 app.put('/employee-order-status/:orderId', requireSignIn, isEmployee, employeeOrderStatusController)
 
 app.get('/get-order', requireSignIn, isAdmin, getPaginationOrderController)
-app.get('/excel-worksheet',requireSignIn,isAdmin,getExcelSheetController)
+app.get('/excel-worksheet', requireSignIn, isAdmin, getExcelSheetController)
+app.post('/invoice-generate', requireSignIn, getInvoiceController)
 
 app.listen(8000, (req, res) => {
     console.log("server is running")

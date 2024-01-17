@@ -7,7 +7,7 @@ const IndexPage = () => {
   return (
 
 
-    <div >
+    <div className='tw-bg-lightGrey'>
 
       <div id="carouselExampleAutoplaying" className="carousel slide" data-bs-ride="carousel">
         <div className="carousel-inner">
@@ -120,7 +120,7 @@ const IndexPage = () => {
         </div>
       </section>
 
-      <div className="about-me mb-5 pt-5">
+      <div className="about-me pt-5">
         <div className="container">
           <div className="row">
             <div className="col-xs-2 col-lg-2">
@@ -134,7 +134,7 @@ const IndexPage = () => {
           </div>
           <div className="row">
             <div className="col-xs-1 col-lg-1" />
-            <div className="col-xs-10 col-lg-10 mb-5 mb-lg-10" >
+            <div className="col-xs-10 col-lg-10" >
               <div className="featured-boxes featured-boxes-style-3 mt-5">
                 <div className="row">
                   <div className="col-lg-4 mb-3">
@@ -188,12 +188,8 @@ const IndexPage = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="col-lg-2 mb-3">
-                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-xs-1 col-lg-1">
             </div>
           </div>
         </div>

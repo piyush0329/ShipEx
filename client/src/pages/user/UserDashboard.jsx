@@ -47,7 +47,7 @@ const UserDashboard = () => {
         }
     }
     return (
-        <div className='d-flex flex-column'>
+        <div className='d-flex flex-column tw-bg-lightGrey'>
             <h2 className='text-center'>Update User Profile</h2>
             <div className='border'>
                 <form onSubmit={handleUserUpdate}>
@@ -83,7 +83,7 @@ const UserDashboard = () => {
                         <label className="form-label">Password</label>
                         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control" />
                     </div>
-                    <button type="submit" className="btn btn-secondary">Update</button>
+                    <button type="submit" className="tw-btn tw-btn-outline tw-bg-red text-white tw-rounded-xl">Update</button>
                 </form>
             </div>
         </div >

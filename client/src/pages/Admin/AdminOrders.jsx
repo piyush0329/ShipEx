@@ -11,22 +11,37 @@ const AdminOrders = () => {
     const [status] = useState(["Not Process", "Processing", "Shipped", "Out for delivery", "Delivered", "Cancelled"])
     const [orders, setOrders] = useState([])
     const [auth] = useAuth()
+    let [page, setPage] = useState()
+    const limit =5
+    const [totalPages, setTotalPages] = useState(1)
+    const [params, setParams] = useState({ limit: limit, page: 1 })
 
-    const getOrders = async () => {
+    const pageButtons = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+    const getOrders = async (pageNumber) => {
         try {
-            const { data } = await axios.get('/all-orders')
-            setOrders(data)
+            const { data } = await axios.get(`/all-orders`, {
+                params: {
+                    ...params,
+                    page: pageNumber
+                }
+            });
+            setOrders(data.orders);
+            const totalDocuments = data.orderlength || 0;
+            const totalPages = Math.ceil(totalDocuments / limit);
+            setTotalPages(totalPages);
         } catch (error) {
-            console.log(error)
+            console.error(error);
         }
     }
     useEffect(() => {
-        if (auth?.token) getOrders()
-    }, [auth?.token])
+        getOrders(page);
+        // eslint-disable-next-line
+    }, [page]);
 
     const handleChange = async (orderId, value) => {
         try {
-                 await axios.put(`/order-status/${orderId}`, { status: value })
+            await axios.put(`/order-status/${orderId}`, { status: value })
 
         } catch (error) {
             console.log(error);
@@ -34,7 +49,7 @@ const AdminOrders = () => {
     }
 
     return (
-        <div>
+        <div className='container-fluid p-3 tw-bg-lightGrey'>
 
             <div className='row'>
                 <div className="col col-md-3">
@@ -44,9 +59,9 @@ const AdminOrders = () => {
                     <h1 className='text-center'>All Orders</h1>
                     {orders?.map((o, i) => {
                         return (
-                            <div key={o._id} className="border shadow">
-                                <table className="table">
-                                    <thead>
+                            <div key={o._id} className="border shadow table-responsive-sm table-responsive-md mt-2 tw-rounded-xl tw-bg-white">
+                                <table className="tw-table tw-rounded-xl">
+                                    <thead className='tw-text-lg tw-text-white tw-bg-red'>
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Status</th>
@@ -57,7 +72,7 @@ const AdminOrders = () => {
                                             <th scope="col">Quantity</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className='bg-white'>
                                         <tr>
                                             <td>{i + 1}</td>
                                             <td>
@@ -81,9 +96,9 @@ const AdminOrders = () => {
                                         </tr>
                                     </tbody>
                                 </table>
-                                <div className="container">
+                                <div className="container-fluid">
                                     {o?.products?.map((p, i) => (
-                                        <div className="row mb-2 p-3 card flex-row" key={p._id}>
+                                        <div className="row mb-2 p-3 flex-row" key={p._id}>
                                             <div className="col-md-8">
                                                 <p><strong>Description: </strong> {p.description.substring(0, 30)}</p>
                                                 <p><strong>Start Location: </strong>{p.startLocation.officeName}</p>
@@ -97,6 +112,18 @@ const AdminOrders = () => {
                             </div>
                         );
                     })}
+                    <br />
+                        <div className="tw-join text-center ">
+                            {pageButtons.map((pageNumber) => (
+                                <button
+                                    key={pageNumber}
+                                    onClick={() => setPage(pageNumber)}
+                                    className={`tw-join-item tw-btn tw-bg-white ${pageNumber === page ? 'tw-btn-active' : ''}`}
+                                >
+                                    {pageNumber}
+                                </button>
+                            ))}
+                        </div>
                 </div>
             </div>
         </div>

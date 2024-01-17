@@ -67,7 +67,7 @@ const CartPage = () => {
   }
 
   return (
-    <div>     
+    <div className='tw-bg-lightGrey'>     
       <div className="row">
         <div className="col-md-12">
           <h2 className="text-center bg-light p-2 mb-1">
@@ -84,11 +84,11 @@ const CartPage = () => {
       </div>
 
       <div className="container">
-        <div className="row ">
+        <div className="row">
           <div className="col-md-7 p-0 m-0">
             {cart?.map((p) => (
               <div key={p._id} className="card d-flex flex-row justify-content-between" >
-                <div className="">
+                <div className="p-4">
                   <h6>Description: {p.description}</h6>
                   <h6>Start Location: {p.startLocation.officeName}</h6>
                   <h6>Destination Location: {p.destinationLocation.officeName}</h6>
@@ -97,7 +97,7 @@ const CartPage = () => {
                   <h6>Price to pay: {p.price.toFixed(2)}</h6>
                 </div>
                 <div className="text-center">
-                  <button className="btn btn-danger" onClick={() => removeCartItem(p._id)} >Remove</button>
+                  <button className="tw-btn btn-danger" onClick={() => removeCartItem(p._id)} >Remove</button>
                 </div>
               </div>
             ))}
