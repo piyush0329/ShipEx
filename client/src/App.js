@@ -26,6 +26,8 @@ import AdminOrders from './pages/Admin/AdminOrders';
 import EmployeeOrders from './pages/employee/EmployeeOrders';
 import UpdateDetails from './pages/employee/UpdateDetails';
 import OrderDetails from './pages/Admin/OrderDetails';
+import CheckoutSuccess from './pages/CheckoutSuccess';
+import CheckoutCancel from './pages/CheckoutCancel';
 axios.defaults.baseURL = 'http://localhost:8000'
 
 
@@ -42,6 +44,8 @@ function App() {
         <Route path='/shipex' element={<Private />} >
           <Route path='services' element={<Services />} />
           <Route path='services/orders' element={<Orders />} />
+          <Route path='services/success' element={<CheckoutSuccess />} />
+          <Route path='services/cancel' element={<CheckoutCancel />} />
         </Route>
         <Route path='/dashboard' element={<UserRoute />} >
           <Route path='user' element={<UserDashboard />} />

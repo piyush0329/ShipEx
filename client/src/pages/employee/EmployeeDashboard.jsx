@@ -11,7 +11,7 @@ const EmployeeDashboard = () => {
                     <EmployeeMenu />
                 </div>
                 <div className="col-md-9">
-                    <div className="card w-75 p-3 tw-bg-light">
+                    <div className="card p-3 tw-bg-light">
                         <h4 className='text-center'>Employee Details</h4>
                         <h5>Employee Name: {auth?.user?.name}</h5>
                         <h5>Employee Email: {auth?.user?.email}</h5>

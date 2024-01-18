@@ -5,7 +5,7 @@ const { registerController, loginController, updateProfileController, loadUserCo
 const { requireSignIn, isAdmin, isEmployee, isUser } = require('./middleware/authMiddleware')
 const { createOfficeController, getOfficeController } = require('./controller/officeController')
 const { getPriceController, addProductController, getProductController, deleteSingleProductController, deleteProductsController } = require('./controller/productController')
-const { addOrderController, getBuyerOrders, getAllOrdersController, orderStatusController, getEmployeeAllOrdersController, employeeOrderStatusController, getPaginationOrderController, getStatusOrdersController, getExcelSheetController, getInvoiceController } = require('./controller/orderController')
+const { addOrderController, getBuyerOrders, getAllOrdersController, orderStatusController, getEmployeeAllOrdersController, employeeOrderStatusController, getPaginationOrderController, getStatusOrdersController, getExcelSheetController, getInvoiceController, checkoutController, webhookController } = require('./controller/orderController')
 
 
 const app = express()
@@ -15,6 +15,8 @@ app.use(cors({
     credentials: true,
     origin: 'http://localhost:3000'
 }))
+
+app.post('/webhook', express.raw({type: 'application/json'}),webhookController);
 app.use(express.json())
 
 app.get("/test", (req, res) => {
@@ -91,6 +93,11 @@ app.put('/employee-order-status/:orderId', requireSignIn, isEmployee, employeeOr
 app.get('/get-order', requireSignIn, isAdmin, getPaginationOrderController)
 app.get('/excel-worksheet', requireSignIn, isAdmin, getExcelSheetController)
 app.post('/invoice-generate', requireSignIn, getInvoiceController)
+
+app.post('/create-checkout-session',requireSignIn,checkoutController)
+
+
+
 
 app.listen(8000, (req, res) => {
     console.log("server is running")

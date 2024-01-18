@@ -205,9 +205,7 @@ const loadUserController = async (req, res) => {
 }
 
 const userUpdateController = async (req, res) => {
-
     try {
-
         const { email, name, roll, classname, password, role, gender, phone, dob } = req.body
         const user = await userModel.findOne({ email })
         if (!password || password.length < 6) {
@@ -576,7 +574,6 @@ const deleteUserController = async (req, res) => {
 }
 
 
-
 module.exports.registerController = registerController
 module.exports.loginController = loginController
 module.exports.updateProfileController = updateProfileController
@@ -590,5 +587,3 @@ module.exports.ControllerEmployee = ControllerEmployee
 module.exports.createEmployeeController = createEmployeeController
 module.exports.deleteEmployeeController = deleteEmployeeController
 module.exports.deleteUserController = deleteUserController
-
-

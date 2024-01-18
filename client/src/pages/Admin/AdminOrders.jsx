@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import AdminMenu from './AdminMenu'
 import axios from 'axios'
 import moment from 'moment'
-import { useAuth } from '../../context/auth'
 import { Select } from 'antd'
 const { Option } = Select
 
@@ -10,9 +9,8 @@ const AdminOrders = () => {
 
     const [status] = useState(["Not Process", "Processing", "Shipped", "Out for delivery", "Delivered", "Cancelled"])
     const [orders, setOrders] = useState([])
-    const [auth] = useAuth()
     let [page, setPage] = useState()
-    const limit =5
+    const limit = 5
     const [totalPages, setTotalPages] = useState(1)
     const [params, setParams] = useState({ limit: limit, page: 1 })
 
@@ -42,7 +40,7 @@ const AdminOrders = () => {
     const handleChange = async (orderId, value) => {
         try {
             await axios.put(`/order-status/${orderId}`, { status: value })
-
+            alert('Status Updated Successfully')
         } catch (error) {
             console.log(error);
         }
@@ -113,17 +111,17 @@ const AdminOrders = () => {
                         );
                     })}
                     <br />
-                        <div className="tw-join text-center ">
-                            {pageButtons.map((pageNumber) => (
-                                <button
-                                    key={pageNumber}
-                                    onClick={() => setPage(pageNumber)}
-                                    className={`tw-join-item tw-btn tw-bg-white ${pageNumber === page ? 'tw-btn-active' : ''}`}
-                                >
-                                    {pageNumber}
-                                </button>
-                            ))}
-                        </div>
+                    <div className="tw-join text-center ">
+                        {pageButtons.map((pageNumber) => (
+                            <button
+                                key={pageNumber}
+                                onClick={() => setPage(pageNumber)}
+                                className={`tw-join-item tw-btn tw-bg-white ${pageNumber === page ? 'tw-btn-active' : ''}`}
+                            >
+                                {pageNumber}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

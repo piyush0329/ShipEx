@@ -57,17 +57,15 @@ const UpdateDetails = () => {
         }
     }
     return (
-        <div className='tw-bg-lightGrey'>
+        <div className='container-fluid p-3 tw-bg-lightGrey'>
             <div className='row'>
-                <div className="col col-md-3">
-                    <EmployeeMenu/>
+                <div className="col-12 col-md-3">
+                    <EmployeeMenu />
                 </div>
-                <div className="col col-md-9">
-                <div className="card mt-3">
-                <div className="row">
-                    <div className='col-12 col-sm-10' >
-                        <h2 className='text-center'>Update Employee Profile</h2>
-                        <div className='border'>
+                <div className="col-12 col-md-9">
+                    <div className='card p-3 tw-bg-light'>
+                        <div className="mt-3">
+                            <h2 className='text-center'>Update Employee Profile</h2>
                             <form onSubmit={handleEmployeeUpdate} className=''>
                                 <div className="mb-3">
                                     <label className="form-label">Email address</label>
@@ -114,15 +112,13 @@ const UpdateDetails = () => {
                                     <label className="form-label">Password</label>
                                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control" />
                                 </div>
-                                <button type="submit" className="btn btn-secondary">Update</button>
+                                <button type="submit" className="tw-btn tw-btn-outline tw-bg-red text-white tw-rounded-xl">Update</button>
                             </form>
+
                         </div>
                     </div>
                 </div>
             </div>
-
-                </div>
-            </div>  
         </div>
     )
 }

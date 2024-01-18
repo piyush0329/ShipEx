@@ -1,7 +1,9 @@
 import React from 'react'
 import { useAuth } from '../context/auth'
 import { useCart } from '../context/cart'
+
 import axios from 'axios'
+import PayButton from '../component/PayButton'
 
 
 const CartPage = () => {
@@ -23,7 +25,7 @@ const CartPage = () => {
       console.log(error);
     }
   }
-  
+
 
   const removeCartItem = async (pid) => {
     try {
@@ -41,33 +43,10 @@ const CartPage = () => {
       console.log(error)
     }
   }
-  const handleMakePayment = async () => {
-    try {
-      const userid = auth.user._id
-      if (cart.length!==0) {
-        const { data } = await axios.post('/add-orders', { products: cart, buyer: auth?.user._id})
-        if (data?.success) {
-          const product = await axios.delete(`/delete-products/${userid}`)
-          if (product.data.success) {
-            setCart([])
-            alert("Order Done successfully")
-          }
-          else {
-            alert("Error in deleting products")
-          }
-        } else {
-          alert("Error in adding order")
-        }
-      }else{
-        alert("Please add items in cart to make a order")
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   return (
-    <div className='tw-bg-lightGrey'>     
+
+    <div className='tw-bg-lightGrey'>
       <div className="row">
         <div className="col-md-12">
           <h2 className="text-center bg-light p-2 mb-1">
@@ -82,7 +61,6 @@ const CartPage = () => {
           </h2>
         </div>
       </div>
-
       <div className="container">
         <div className="row">
           <div className="col-md-7 p-0 m-0">
@@ -97,7 +75,7 @@ const CartPage = () => {
                   <h6>Price to pay: {p.price.toFixed(2)}</h6>
                 </div>
                 <div className="text-center">
-                  <button className="tw-btn btn-danger" onClick={() => removeCartItem(p._id)} >Remove</button>
+                  <button className="tw-btn tw-btn-outline tw-bg-red text-white" onClick={() => removeCartItem(p._id)} >Remove</button>
                 </div>
               </div>
             ))}
@@ -108,7 +86,7 @@ const CartPage = () => {
             <h4>Total : {totalPrice()} </h4>
             <br />
             <br />
-            <button onClick={handleMakePayment} className='btn btn-outline-success'>Make Payment</button>
+            {cart.length!==0?<PayButton cart={cart} user={auth.user._id}/>:""}
           </div>
         </div>
       </div>

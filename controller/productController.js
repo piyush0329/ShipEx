@@ -77,7 +77,7 @@ const addProductController=async (req,res)=>{
             return res.send({ message: "User Id is required" })
         }
         const product = await new productModel({startLocation,destinationLocation,weight,description,shipmentValue,price,userid}).save()
-        const updatedProduct = await productModel.findById(product._id).populate('startLocation').populate('destinationLocation')
+        const updatedProduct = await productModel.findById(product._id).populate('startLocation',["officeName","officeId"]).populate('destinationLocation',["officeName","officeId"])
         res.status(200).send({
             success: true,
             message: "Product Added Successfully",
@@ -99,7 +99,7 @@ const getProductController = async(req,res)=>{
     try {
 
         const {userid} = req.params
-        const products = await productModel.find({userid}).populate('startLocation').populate('destinationLocation',)
+        const products = await productModel.find({userid}).populate('startLocation',["officeName","officeId"]).populate('destinationLocation',["officeName","officeId"])
         if(products){
             res.status(200).send({
                 success: true,

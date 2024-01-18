@@ -71,7 +71,7 @@ const Register = () => {
                         <label className="form-label">Password</label>
                         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control" />
                     </div>
-                    <button type="submit" className="btn btn-secondary">Submit</button>
+                    <button type="submit" className="tw-btn tw-btn-outline tw-bg-red text-white tw-rounded-xl">Submit</button>
                     <div className="mb-3">
                         <Link to={'/login'} className="form-label underline text-black">Already a user?<span className='font-weight-bold text-primary'>Login</span></Link>
 

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import EmployeeMenu from './EmployeeMenu'
 
 import { Select } from 'antd'
-import { useAuth } from '../../context/auth'
 import axios from 'axios'
 import moment from 'moment'
 const { Option } = Select
@@ -10,30 +9,45 @@ const { Option } = Select
 const EmployeeOrders = () => {
     const [status] = useState(["Out for delivery", "Delivered", "Cancelled"])
     const [orders, setOrders] = useState([])
-    const [auth] = useAuth()
+    let [page, setPage] = useState()
+    const limit =5
+    const [totalPages, setTotalPages] = useState(1)
+    const [params, setParams] = useState({ limit: limit, page: 1 })
 
-    const getOrders = async () => {
+    const pageButtons = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+    const getOrders = async (pageNumber) => {
         try {
-            const { data } = await axios.get("/employee-all-orders")
-            setOrders(data)
+            const { data } = await axios.get(`/employee-all-orders`, {
+                params: {
+                    ...params,
+                    page: pageNumber
+                }
+            });
+            setOrders(data.orders);
+            const totalDocuments = data.orderlength || 0;
+            const totalPages = Math.ceil(totalDocuments / limit);
+            setTotalPages(totalPages);
         } catch (error) {
-            console.log(error)
+            console.error(error);
         }
     }
     useEffect(() => {
-        if (auth?.token) getOrders()
-    }, [auth?.token])
+        getOrders(page);
+        // eslint-disable-next-line
+    }, [page]);
 
     const handleChange = async (orderId, value) => {
         try {
-             await axios.put(`/employee-order-status/${orderId}`, { status: value })
+            await axios.put(`/employee-order-status/${orderId}`, { status: value })
+            alert("Status Updated Successfully")
         } catch (error) {
             console.log(error);
         }
     }
 
     return (
-        <div className='tw-bg-lightGrey'>
+        <div className='container-fluid p-3 tw-bg-lightGrey'>
 
             <div className='row'>
                 <div className="col col-md-3">
@@ -43,9 +57,9 @@ const EmployeeOrders = () => {
                     <h1 className='text-center'>All Orders</h1>
                     {orders?.map((o, i) => {
                         return (
-                            <div key={o._id} className="border shadow">
-                                <table className="table">
-                                    <thead>
+                            <div key={o._id} className="border table-responsive-sm table-responsive-md shadow tw-rounded-xl mt-2 shadow tw-bg-white">
+                                <table className="tw-table">
+                                    <thead className='tw-text-lg text-white tw-bg-red'>
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Status</th>
@@ -80,22 +94,32 @@ const EmployeeOrders = () => {
                                         </tr>
                                     </tbody>
                                 </table>
-                                <div className="container">
+                                <div className="">
                                     {o?.products?.map((p, i) => (
-                                        <div className="row mb-2 p-3 card flex-row" key={p._id}>
-                                            <div className="col-md-8">
-                                                <p><strong>Description: </strong> {p.description.substring(0, 30)}</p>
-                                                <p><strong>Start Location: </strong>{p.startLocation.officeName}</p>
-                                                <p><strong>Destination Location: </strong>{p.destinationLocation.officeName}</p>
-                                                <p><strong>Shipment Value: </strong>{p.shipmentValue}</p>
-                                                <p><strong>Shipping Price: </strong>{p.price}</p>
-                                            </div>
+                                        <div className="mb-2 p-3" key={p._id}>
+                                            <p><strong>Description: </strong> {p.description.substring(0, 30)}</p>
+                                            <p><strong>Start Location: </strong>{p.startLocation.officeName}</p>
+                                            <p><strong>Destination Location: </strong>{p.destinationLocation.officeName}</p>
+                                            <p><strong>Shipment Value: </strong>{p.shipmentValue}</p>
+                                            <p><strong>Shipping Price: </strong>{p.price}</p>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         );
                     })}
+                    <br />
+                    <div className="tw-join text-center ">
+                        {pageButtons.map((pageNumber) => (
+                            <button
+                                key={pageNumber}
+                                onClick={() => setPage(pageNumber)}
+                                className={`tw-join-item tw-btn tw-bg-white ${pageNumber === page ? 'tw-btn-active' : ''}`}
+                            >
+                                {pageNumber}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

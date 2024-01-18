@@ -50,7 +50,6 @@ const IndexPage = () => {
             </p>
           </div>
         </div>
-
         <div className="col-12 col-sm-5">
           <img className='rounded img-fluid h-500 w-500 ' src='https://images.unsplash.com/photo-1543499459-d1460946bdc6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y291cmllcnxlbnwwfHwwfHx8MA%3D%3D' alt='...' />
         </div>
@@ -119,7 +118,6 @@ const IndexPage = () => {
           </div>
         </div>
       </section>
-
       <div className="about-me pt-5">
         <div className="container">
           <div className="row">

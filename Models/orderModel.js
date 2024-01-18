@@ -7,7 +7,7 @@ const orderSchema = new mongoose.Schema({
     }],
     payment: {
         type:String,
-        default:"Payment Done",
+        default:'Not Done',
         enum: ["Not Done", "Pending", "Cancelled", "Payment Done"]
     },  
     buyer:{
