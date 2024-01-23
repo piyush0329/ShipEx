@@ -9,7 +9,7 @@ const requireSignIn = async (req, res, next) => {
         req.user = decode
         next()
     } catch (error) {
-        console.log("error in require sign in middlware" )
+        console.log("error in require sign in middlware")
         console.log(error)
     }
 
@@ -18,13 +18,13 @@ const requireSignIn = async (req, res, next) => {
 const isAdmin = async (req, res, next) => {
     try {
         const user = await userModel.findById(req.user._id)
-        if(user.role===1){
+        if (user.role === 1) {
             next()
         }
-        else{   
+        else {
             return res.status(401).send({
-                success:false,
-                message:"Unauthorized access"
+                success: false,
+                message: "Unauthorized access"
             })
         }
     } catch (error) {
@@ -37,16 +37,16 @@ const isAdmin = async (req, res, next) => {
     }
 }
 
-const isEmployee =async(req,res,next)=>{
+const isEmployee = async (req, res, next) => {
     try {
         const user = await userModel.findById(req.user._id)
-        if(user.role===2){
+        if (user.role === 2) {
             next()
         }
-        else{  
+        else {
             return res.status(401).send({
-                success:false,
-                message:"Unauthorized access"
+                success: false,
+                message: "Unauthorized access"
             })
         }
     } catch (error) {
@@ -59,16 +59,16 @@ const isEmployee =async(req,res,next)=>{
     }
 
 }
-const isUser =async(req,res,next)=>{
+const isUser = async (req, res, next) => {
     try {
         const user = await userModel.findById(req.user._id)
-        if(user.role===0){
+        if (user.role === 0) {
             next()
         }
-        else{  
+        else {
             return res.status(401).send({
-                success:false,
-                message:"Unauthorized access"
+                success: false,
+                message: "Unauthorized access"
             })
         }
     } catch (error) {

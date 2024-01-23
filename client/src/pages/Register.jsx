@@ -30,13 +30,11 @@ const Register = () => {
             console.log(error);
             alert("Something went wrong");
         }
-
     }
 
     return (
         <div className='d-flex flex-column tw-bg-lightGrey'>
             <h1 className='text-center'>Register</h1>
-
             <div className='border'>
                 <form onSubmit={handleRegister}>
                     <div className="mb-3">

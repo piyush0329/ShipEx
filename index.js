@@ -5,8 +5,9 @@ const { registerController, loginController, updateProfileController, loadUserCo
 const { requireSignIn, isAdmin, isEmployee, isUser } = require('./middleware/authMiddleware')
 const { createOfficeController, getOfficeController } = require('./controller/officeController')
 const { getPriceController, addProductController, getProductController, deleteSingleProductController, deleteProductsController } = require('./controller/productController')
-const { addOrderController, getBuyerOrders, getAllOrdersController, orderStatusController, getEmployeeAllOrdersController, employeeOrderStatusController, getPaginationOrderController, getStatusOrdersController, getExcelSheetController, getInvoiceController, checkoutController, webhookController } = require('./controller/orderController')
+const { addOrderController, getBuyerOrders, getAllOrdersController, orderStatusController, getEmployeeAllOrdersController, employeeOrderStatusController, getPaginationOrderController, getStatusOrdersController, getExcelSheetController, getInvoiceController, checkoutController, webhookController, retrievePaymentStatus, setSessionController, setStatusController, refundController } = require('./controller/orderController')
 
+const stripe = require('stripe')('sk_test_51OZSAbSB0wwAWHZh7j03Dz8PIxm8eqfQGaGHVCbnAhTqwpKLV3YP5FEpA4ttyDFmVun8QeT0J3jwmwX0gqvApwW800srmgFa07')
 
 const app = express()
 connectDB()
@@ -16,7 +17,7 @@ app.use(cors({
     origin: 'http://localhost:3000'
 }))
 
-app.post('/webhook', express.raw({type: 'application/json'}),webhookController);
+app.post('/webhook', express.raw({ type: 'application/json' }), webhookController);
 app.use(express.json())
 
 app.get("/test", (req, res) => {
@@ -85,7 +86,7 @@ app.delete('/delete-products/:userid', requireSignIn, deleteProductsController)
 
 app.post('/add-orders', requireSignIn, addOrderController)
 app.get('/get-orders/:buyerid', requireSignIn, getBuyerOrders)
-app.get('/all-orders', requireSignIn,isAdmin, getAllOrdersController)
+app.get('/all-orders', requireSignIn, isAdmin, getAllOrdersController)
 app.get('/employee-all-orders', requireSignIn, isEmployee, getEmployeeAllOrdersController)
 app.put('/order-status/:orderId', requireSignIn, isAdmin, orderStatusController)
 app.put('/employee-order-status/:orderId', requireSignIn, isEmployee, employeeOrderStatusController)
@@ -94,10 +95,19 @@ app.get('/get-order', requireSignIn, isAdmin, getPaginationOrderController)
 app.get('/excel-worksheet', requireSignIn, isAdmin, getExcelSheetController)
 app.post('/invoice-generate', requireSignIn, getInvoiceController)
 
-app.post('/create-checkout-session',requireSignIn,checkoutController)
+app.post('/create-checkout-session', requireSignIn, checkoutController)
+app.post('/refund', requireSignIn, refundController)
 
 
+// app.get('/test2', (req, res) => {
+//     //
 
+//     res.writeHead(302, {
+//         'Location': 'http://localhost:3000/cart'
+//         //add other headers here...
+//     });
+//     res.end();
+// })
 
 app.listen(8000, (req, res) => {
     console.log("server is running")

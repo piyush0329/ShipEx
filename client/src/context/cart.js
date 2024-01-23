@@ -13,6 +13,9 @@ const CartProvider = ({ children }) => {
       const userid = auth?.user?._id
       const fetchProduct = async () => {
         const { data } = await axios.get(`/get-products/${userid}`)
+        if(data.order){
+          alert('Order Done Successfully')
+        }
         setCart(data.products)
       }
       if(userid) fetchProduct()
@@ -27,6 +30,6 @@ const CartProvider = ({ children }) => {
   );
 };
 // custom hook
-const useCart = () => useContext(CartContext);
+const useCart = () => useContext(CartContext)
 
 export { useCart, CartProvider };

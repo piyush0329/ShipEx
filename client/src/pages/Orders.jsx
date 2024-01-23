@@ -9,7 +9,7 @@ const Orders = () => {
   const [auth] = useAuth()
   const getOrders = async () => {
     try {
-      const buyerid = auth.user._id
+      const buyerid = auth?.user._id
       const { data } = await axios.get(`/get-orders/${buyerid}`)
       setOrders(data)
     } catch (error) {
@@ -17,21 +17,39 @@ const Orders = () => {
     }
   }
   useEffect(() => {
-    if (auth?.token) {
+    if (auth?.user._id) {
       getOrders()
     }
     // eslint-disable-next-line
-  }, [auth?.token])
+  }, [auth?.user._id])
 
   const generateInvoice = async (o) => {
     try {
-      const { data } = await axios.post('/invoice-generate', { o })
+      const { data,status } = await axios.post('/invoice-generate', { o })
+      if(status===200){
+        alert('Invoice Generated Successfully')
+      }
+
     } catch (error) {
       console.log(error);
     }
 
   }
 
+  const cancelOrder = async (order) => {
+    try {
+      const { data } = await axios.post('/refund', { order })
+      if (data.refundId) {
+        alert('refund initiated successfully')
+        getOrders()
+      }
+    } catch (error) {
+      console.log(error)
+
+    }
+
+    console.log("order cancelled")
+  }
 
   return (
     <div>
@@ -105,8 +123,9 @@ const Orders = () => {
                       ))}
                     </div>
                     <div>
-
                       {(o.status === "Delivered") ? <button onClick={() => generateInvoice(o)} className='tw-btn tw-bg-red tw-text-white'>Generate Invoice</button> : ""
+                      }
+                      {(o.payment !== "Refunded" && o.status !== "Delivered") ? <button onClick={() => cancelOrder(o)} className='tw-btn tw-bg-red tw-text-white'>Cancel Order</button> : ""
                       }
                     </div>
                   </div>

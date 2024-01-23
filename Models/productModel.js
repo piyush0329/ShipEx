@@ -33,6 +33,12 @@ const officeSchema = new mongoose.Schema({
         ref:'users',
         required:true,  
     },
+    payment:{
+        sessionId:{
+            type:String,
+            default:null
+        },
+    }
 }, {
     timestamps: true
 })

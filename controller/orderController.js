@@ -5,13 +5,10 @@ const pdf = require('html-pdf')
 const moment = require('moment')
 const ejs = require('ejs');
 const path = require('path');
-const stripe = require('stripe')('--add your publishable key--')
+const stripe = require('stripe')('sk_test_51OZSAbSB0wwAWHZh7j03Dz8PIxm8eqfQGaGHVCbnAhTqwpKLV3YP5FEpA4ttyDFmVun8QeT0J3jwmwX0gqvApwW800srmgFa07')
 const userModel = require("../Models/userModel");
-const { stringify } = require("querystring")
+const paymentModel = require("../Models/paymentModel")
 const productModel = require("../Models/productModel")
-
-
-
 
 
 const addOrderController = async (req, res) => {
@@ -247,8 +244,9 @@ const getInvoiceController = async (req, res) => {
 }
 
 const checkoutController = async (req, res) => {
-
+    let sessionId
     try {
+
         const { products, userId } = req.body
         const user = await userModel.findOne({ _id: userId })
         const lineItems = products.map((product) => (
@@ -265,89 +263,149 @@ const checkoutController = async (req, res) => {
         ))
         const customer = await stripe.customers.create({
             name: user.name,
-            metadata: {
-                userId: userId,
-                cart: JSON.stringify(products)
-
-            }
+            // metadata: {
+            //     userId: userId,
+            //     cart: JSON.stringify(products)
+            // }
         })
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             customer: customer.id,
             line_items: lineItems,
+            phone_number_collection: {
+                enabled: true
+            },
+            metadata: {
+                userId: userId,
+            },
             mode: 'payment',
-            success_url: 'http://localhost:3000/shipex/services/success',
-            cancel_url: 'http://localhost:3000/shipex/services/cancel',
-
+            success_url: `http://localhost:3000/cart?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `http://localhost:3000/cart?session_id={CHECKOUT_SESSION_ID}`,
         })
+        products.forEach(async (element) => {
+            if (element.payment.sessionId !== null) {
+                const session = await stripe.checkout.sessions.retrieve(element.payment.sessionId)
+                if (session.status === "open") {
+                    sessionId = element.payment.sessionId
+                    const checkout_url = `https://checkout.stripe.com/c/pay/${sessionId}#fidkdWxOYHwnPyd1blpxYHZxWjA0Sl9WRGdWRzVyckRSTV9tbk5PMWpWTVdgTnRodkBSVkJxPV9HfWRcd3VzTGRibk98X2pnSzRgSGpOR2hkTTRBfTFddUJLbU5QdXBvMkFTYENxVm01THV%2FNTVfd2puQG5wTScpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl`
+                    return res.status(200).send({
+                        success: true,
+                        message: "url and session id",
+                        url: checkout_url,
+                        sessId: sessionId
+                    })
 
-        res.status(200).send({
-            url: session.url
-        })
+                }
+            } else {
+                const product = await productModel.findOneAndUpdate({ userid: userId }, {
+                    payment: {
+                        sessionId: session.id,
+                    }
+                }, { new: true })
+                return res.status(200).send({
+                    success: true,
+                    message: "url and session id",
+                    url: session.url,
+                    sessionId: session.id,
+                    product
+                })
+            }
+        });
+        // return res.status(200).send({
+        //     success:true,
+        //     message:"url and session id",
+        //     url: session.url,
+        //     sessionId: session.id 
+        // })
         // res.redirect(303, session.url);
     } catch (error) {
         console.log(error)
-
+        res.status(500).send({
+            success: false,
+            message: "error in checkout controller",
+            error
+        })
     }
 }
 
-
-const endpointSecret = "--add your stripe end point sercert key here--";
-
 const webhookController = async (req, res) => {
-    const sig = req.headers['stripe-signature'];
+    const endpointSecret = "whsec_aa8c457099f5a8c2dfbc0f443c43702bcae032b40da6fd3872a2b5df10a2861c"
+    const sig = req.headers['stripe-signature']
     let data
     let eventType
-    let event;
+    let event
     try {
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret)
         console.log("webhook verified")
         data = event.data.object
         eventType = event.type
     } catch (err) {
         console.log(`Webhook Error: ${err.message}`)
-        res.status(400).send(`Webhook Error: ${err.message}`);
-        return;
+        res.status(400).send(`Webhook Error: ${err.message}`)
+        return
     }
-
     // Handle the event
 
-    if (eventType === "checkout.session.completed") {
-        try {
-            let payment
-            let customerCart
-            let customerId
-            const customer = await stripe.customers.retrieve(data.customer)
-            customerCart = JSON.parse(customer.metadata.cart)
-            customerId = customer.metadata.userId
+    // if (eventType === "checkout.session.completed") {
+    //     try {
+    //         let payment
+    //         let customerCart
+    //         let customerId
+    //         const customer = await stripe.customers.retrieve(data.customer)
+    //         customerCart = JSON.parse(customer.metadata.cart)
+    //         customerId = customer.metadata.userId
+    //         console.log(data)
 
-            if (data.payment_status === 'paid') {
-                payment = "Payment Done"
-            }
-            // const totalPrice = () => {
-            //     let total = 0;
-            //     customerCart?.map((item) => (
-            //         total = total + item.price
-            //     ))
-            //     return total
-            // }
-            const order = await new orderModel({ products: customerCart, payment: payment, buyer: customerId, totalAmount: (data.amount_total / 100) }).save()
-            const products = await productModel.deleteMany({ userid: customerId })
-            console.log('Order Done Successfully')
-            res.status(200).send({
-                success: true,
-                message: "Order Done Successfully"
-            })
-        } catch (error) {
-            console.log(error)
-        }
-
-    }
-
+    //         if (data.payment_status === 'paid') {
+    //             payment = "Payment Done"
+    //             const order = await new orderModel({ products: customerCart, payment: payment, buyer: customerId, totalAmount: (data.amount_total / 100) }).save()
+    //             const products = await productModel.deleteMany({ userid: customerId })
+    //             console.log('Order Done Successfully')
+    //             res.status(200).send({
+    //                 success: true,
+    //                 message: "Order Done Successfully"
+    //             })
+    //         }       
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
     // Return a 200 res to acknowledge receipt of the event
     res.send().end()
 }
 
+const refundController = async (req, res) => {
+    try {
+        const { order } = req.body
+        const payment = await paymentModel.findOne({ order: order._id })
+        const session = await stripe.checkout.sessions.retrieve(payment.sessionId)
+        const refund = await stripe.refunds.create({
+            payment_intent: session.payment_intent,
+            amount: parseInt(order.totalAmount*100),
+        });
+        const updatePayment = await paymentModel.findOneAndUpdate({order:order._id},{
+            refundId:refund.id,
+            paymentStatus:"Refunded"
+        })
+        const updateOrder = await orderModel.findOneAndUpdate({_id:order._id},{
+            payment:"Refunded"
+        })
+        res.status(200).send({
+            success:true,
+            message:"Refund initiated sucessfully",
+            refundId:refund.id
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: "error while getting invoice",
+            error
+        })
+
+    }
+
+}
 
 
 module.exports.addOrderController = addOrderController
@@ -361,4 +419,6 @@ module.exports.getExcelSheetController = getExcelSheetController
 module.exports.getInvoiceController = getInvoiceController
 module.exports.checkoutController = checkoutController
 module.exports.webhookController = webhookController
+module.exports.refundController = refundController
+
 

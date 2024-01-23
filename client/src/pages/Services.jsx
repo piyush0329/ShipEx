@@ -55,11 +55,14 @@ const Services = () => {
         e.preventDefault()
         try {
                if(price){
-                const {data}= await axios.post(`/add-product`,{startLocation,destinationLocation,weight,description,shipmentValue,price,userid:auth.user._id})
-                if (data?.success) {
+                const {data,status}= await axios.post(`/add-product`,{startLocation,destinationLocation,weight,description,shipmentValue,price,userid:auth.user._id})
+                if (status===200 && data?.success) {
                     setCart([...cart,data.updatedProduct])
                     alert('product added to cart')
-                } else {
+                } else if(status===200 && (!data?.success)) {
+                    alert("Already one product present in cart make payment for it first then add other or remove it")
+                }
+                 else{
                     alert("error in adding Product")
                 }
                }else{

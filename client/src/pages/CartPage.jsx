@@ -1,9 +1,9 @@
 import React from 'react'
 import { useAuth } from '../context/auth'
 import { useCart } from '../context/cart'
-
 import axios from 'axios'
-import PayButton from '../component/PayButton'
+
+// const stripe = loadStripe('pk_test_51OZSAbSB0wwAWHZhkKJ4oSHReKqmsEWSGt8ZBxaYrpvIagkJyZobN1eMoKBmaH1Dx4XpGNhKUpuj7DVeFtSh0Ipz00ZrokEkuH')
 
 
 const CartPage = () => {
@@ -11,6 +11,20 @@ const CartPage = () => {
   const [auth] = useAuth()
   const [cart, setCart] = useCart()
 
+  const handleMakePayment = async () => {
+    try {
+      const body = {
+        products: cart,
+        userId: auth.user._id
+      }
+      const response = await axios.post('/create-checkout-session', body);
+      if (response.data.url) {
+        window.location.href = response.data.url
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const totalPrice = () => {
     try {
       let total = 0;
@@ -25,8 +39,6 @@ const CartPage = () => {
       console.log(error);
     }
   }
-
-
   const removeCartItem = async (pid) => {
     try {
       let myCart = [...cart]
@@ -45,7 +57,6 @@ const CartPage = () => {
   }
 
   return (
-
     <div className='tw-bg-lightGrey'>
       <div className="row">
         <div className="col-md-12">
@@ -86,7 +97,7 @@ const CartPage = () => {
             <h4>Total : {totalPrice()} </h4>
             <br />
             <br />
-            {cart.length!==0?<PayButton cart={cart} user={auth.user._id}/>:""}
+            {cart.length !== 0 ? <button onClick={handleMakePayment} className='tw-btn tw-btn-outline'>Make Payment</button> : ""}
           </div>
         </div>
       </div>
