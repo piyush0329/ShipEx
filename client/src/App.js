@@ -26,6 +26,7 @@ import AdminOrders from './pages/Admin/AdminOrders';
 import EmployeeOrders from './pages/employee/EmployeeOrders';
 import UpdateDetails from './pages/employee/UpdateDetails';
 import OrderDetails from './pages/Admin/OrderDetails';
+import OrderStats from './pages/Admin/OrderStats';
 
 axios.defaults.baseURL = 'http://localhost:8000'
 
@@ -57,6 +58,7 @@ function App() {
           <Route path='admin/create-office' element={<CreateOffice />} />
           <Route path='admin/update-orders' element={<AdminOrders />} />
           <Route path='admin/order-details' element={<OrderDetails />} />
+          <Route path='admin/order-stats' element={<OrderStats />} />
         </Route>
         <Route path='/dashboard' element={<EmployeeRoute />}>
           <Route path='employee' element={<EmployeeDashboard />} />

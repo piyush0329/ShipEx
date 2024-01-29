@@ -5,6 +5,14 @@ const orderSchema = new mongoose.Schema({
     products: [{
 
     }],
+    startLocation:{
+        type:mongoose.ObjectId,
+        ref:'office'
+    },
+    destinationLocation:{
+        type:mongoose.ObjectId,
+        ref:'office'
+    },
     payment: {
         type: String,
         default: 'Not Done',
@@ -21,6 +29,10 @@ const orderSchema = new mongoose.Schema({
     },
     totalAmount: {
         type: Number,
+    },
+    refundDetails:{
+        type:Object,
+        default:null
     }
 }, {
     timestamps: true

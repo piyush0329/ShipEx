@@ -52,17 +52,17 @@ const OrderDetails = () => {
 
     const handleExport = async () => {
         try {
-            const {data} =await axios.get(`/excel-worksheet`, {
+            const { data } = await axios.get(`/excel-worksheet`, {
                 params: {
                     ...params
                 }
             });
-            if(data.success){
+            if (data.success) {
                 alert('File Exported Successfully')
-            }else{
+            } else {
                 alert('Problem in Exporting File')
             }
-            
+
         } catch (error) {
             console.error(error);
         }
@@ -73,7 +73,7 @@ const OrderDetails = () => {
         }
         // eslint-disable-next-line
     }, [auth?.token])
-    
+
     useEffect(() => {
         filterSubmit(page);
         // eslint-disable-next-line
@@ -186,15 +186,18 @@ const OrderDetails = () => {
                                     <div className=''>
                                         {
                                             o?.products?.map((p, i) => (
-                                                <div className="mb-2 p-3" key={p._id}>
+                                                <div className="px-3" key={p._id}>
                                                     <p><strong>Description: </strong> {p.description.substring(0, 30)}</p>
-                                                    <p><strong>Start Location: </strong>{p.startLocation.officeName}</p>
-                                                    <p><strong>Destination Location: </strong>{p.destinationLocation.officeName}</p>
+                                                    <p><strong>Start Location: </strong>{o.startLocation.officeName}</p>
+                                                    <p><strong>Destination Location: </strong>{o.destinationLocation.officeName}</p>
                                                     <p><strong>Shipment Value: </strong>{p.shipmentValue}</p>
                                                     <p><strong>Shipping Price: </strong>{p.price}</p>
-
                                                 </div>
                                             ))
+                                        }
+                                        {o.refundDetails ?
+                                            <div className='px-3 pb-3'><strong>Refund Status:</strong> {(o.refundDetails?.destination_details.card.reference_status !== "pending") ? `Refund successfully transfered to your original source. if not recieved by you then you can contact to  your bank with this reference id: ${o.refundDetails?.destination_details?.card?.reference}` : "Refund initiated successfully"} </div>
+                                            : ''
                                         }
 
                                     </div>

@@ -94,9 +94,7 @@ const addProductController = async (req, res) => {
                 success: false,
                 message: "Already Product Present",
             })
-
         }
-
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -116,8 +114,9 @@ const getProductController = async (req, res) => {
         // const session_id= req.query
         // console.log(session_id)
         const products = await productModel.find({ userid }).populate('startLocation', ["officeName", "officeId"]).populate('destinationLocation', ["officeName", "officeId"])
+        
         if (products.length !== 0) {
-            if (products[0].payment.sessionId) {
+            if (products[0].payment.sessionId!==null) {
                 const session = await stripe.checkout.sessions.retrieve(products[0].payment.sessionId);
                 if (session.status === 'complete') {
                     if (session.payment_status === "paid") {
@@ -128,11 +127,11 @@ const getProductController = async (req, res) => {
                             ))
                             return total
                         }
-                        const updateprod = await productModel.findOneAndUpdate({ userid })
-                        const order = await new orderModel({ products: products, payment: "Payment Done", buyer: userid, totalAmount: totalPrice() }).save()
+                     // const updateprod = await productModel.findOneAndUpdate({ userid })
+                        const order = await new orderModel({startLocation:products[0].startLocation._id,destinationLocation:products[0].destinationLocation._id, products: products, payment: "Payment Done", buyer: userid, totalAmount: totalPrice() }).save()
                         const payment = await new paymentModel({ order: order._id, buyer: userid, sessionId: session.id, paymentStatus: "Payment Done" }).save()
                         const delproduct = await productModel.deleteMany({ userid: userid })
-                        const prod = await productModel.find({ userid })
+                        const prod = await productModel.find({ userid }).populate('startLocation', ["officeName", "officeId"]).populate('destinationLocation', ["officeName", "officeId"])
                         res.status(200).send({
                             success: true,
                             message: "Order Done Successfully",

@@ -98,8 +98,8 @@ const EmployeeOrders = () => {
                                     {o?.products?.map((p, i) => (
                                         <div className="mb-2 p-3" key={p._id}>
                                             <p><strong>Description: </strong> {p.description.substring(0, 30)}</p>
-                                            <p><strong>Start Location: </strong>{p.startLocation.officeName}</p>
-                                            <p><strong>Destination Location: </strong>{p.destinationLocation.officeName}</p>
+                                            <p><strong>Start Location: </strong>{o.startLocation.officeName}</p>
+                                            <p><strong>Destination Location: </strong>{o.destinationLocation.officeName}</p>
                                             <p><strong>Shipment Value: </strong>{p.shipmentValue}</p>
                                             <p><strong>Shipping Price: </strong>{p.price}</p>
                                         </div>

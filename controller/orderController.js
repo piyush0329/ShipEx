@@ -1,6 +1,5 @@
 const orderModel = require("../Models/orderModel")
 const ExcelJs = require('exceljs')
-const fs = require('fs')
 const pdf = require('html-pdf')
 const moment = require('moment')
 const ejs = require('ejs');
@@ -43,11 +42,31 @@ const addOrderController = async (req, res) => {
         })
     }
 }
-
 const getBuyerOrders = async (req, res) => {
     try {
         const { buyerid } = req.params
-        const orders = await orderModel.find({ buyer: buyerid }).populate("buyer", "name").sort({ createdAt: -1 })
+        const orders = await orderModel.find({ buyer: buyerid }).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
+        orders.forEach(async (order) => {
+            if (order.refundDetails !== null) {
+                const refund = await stripe.refunds.retrieve(order.refundDetails.refundId)
+                if (refund.destination_details.card.reference != "pending") {
+                    const updateorder = await orderModel.findOneAndUpdate({ _id: order._id }, {
+                        refundDetails: {
+                            destination_details: {
+                                card: {
+                                    reference: refund.destination_details.card.reference,
+                                    reference_status: refund.destination_details.card.reference_status,
+                                    reference_type: refund.destination_details.card.reference_type,
+                                    type: refund.destination_details.card.type
+                                },
+                                type: "card"
+                            },
+                            refundId: refund.id,
+                        }
+                    })
+                }
+            }
+        })
         res.json(orders)
     } catch (error) {
         console.log(error);
@@ -61,7 +80,7 @@ const getBuyerOrders = async (req, res) => {
 const getAllOrdersController = async (req, res) => {
     try {
         const { page, limit } = req.query
-        const orders = await orderModel.find({}).skip((page - 1) * limit).limit(limit).populate("buyer", "name").sort({ createdAt: -1 })
+        const orders = await orderModel.find({}).skip((page - 1) * limit).limit(limit).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
         const orderlength = (await orderModel.find({}).populate("buyer", "name").sort({ createdAt: -1 })).length
         res.status(200).send({
             success: true,
@@ -77,7 +96,6 @@ const getAllOrdersController = async (req, res) => {
         })
     }
 }
-
 const getPaginationOrderController = async (req, res) => {
     try {
         const { page, limit, status, payment, source, destination } = req.query
@@ -87,7 +105,7 @@ const getPaginationOrderController = async (req, res) => {
         if (source) filters["products.startLocation.officeName"] = source
         if (destination) filters["products.destinationLocation.officeName"] = destination
         const orderlength = (await orderModel.find(filters).populate("buyer", "name").sort({ createdAt: -1 })).length
-        const orders = (await orderModel.find(filters).skip((page - 1) * limit).limit(limit).populate("buyer", "name").sort({ createdAt: -1 }))
+        const orders = (await orderModel.find(filters).skip((page - 1) * limit).limit(limit).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 }))
 
         res.status(200).send({
             success: true,
@@ -103,7 +121,6 @@ const getPaginationOrderController = async (req, res) => {
         })
     }
 }
-
 const getExcelSheetController = async (req, res) => {
     try {
         const { status, payment, source, destination } = req.query
@@ -152,7 +169,7 @@ const getExcelSheetController = async (req, res) => {
 const getEmployeeAllOrdersController = async (req, res) => {
     try {
         const { page, limit } = req.query
-        const orders = await orderModel.find({}).skip((page - 1) * limit).limit(limit).populate("buyer", "name").sort({ createdAt: -1 })
+        const orders = await orderModel.find({}).skip((page - 1) * limit).limit(limit).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
         const orderlength = (await orderModel.find({}).populate("buyer", "name").sort({ createdAt: -1 })).length
         res.status(200).send({
             success: true,
@@ -168,7 +185,6 @@ const getEmployeeAllOrdersController = async (req, res) => {
         })
     }
 }
-
 const orderStatusController = async (req, res) => {
     try {
         const { orderId } = req.params
@@ -206,7 +222,6 @@ const employeeOrderStatusController = async (req, res) => {
         })
     }
 }
-
 const getInvoiceController = async (req, res) => {
     try {
         const { o } = req.body
@@ -242,7 +257,6 @@ const getInvoiceController = async (req, res) => {
         })
     }
 }
-
 const checkoutController = async (req, res) => {
     let sessionId
     try {
@@ -327,7 +341,6 @@ const checkoutController = async (req, res) => {
         })
     }
 }
-
 const webhookController = async (req, res) => {
     const endpointSecret = "whsec_aa8c457099f5a8c2dfbc0f443c43702bcae032b40da6fd3872a2b5df10a2861c"
     const sig = req.headers['stripe-signature']
@@ -373,7 +386,6 @@ const webhookController = async (req, res) => {
     // Return a 200 res to acknowledge receipt of the event
     res.send().end()
 }
-
 const refundController = async (req, res) => {
     try {
         const { order } = req.body
@@ -381,30 +393,89 @@ const refundController = async (req, res) => {
         const session = await stripe.checkout.sessions.retrieve(payment.sessionId)
         const refund = await stripe.refunds.create({
             payment_intent: session.payment_intent,
-            amount: parseInt(order.totalAmount*100),
+            amount: parseInt(order.totalAmount * 100),
         });
-        const updatePayment = await paymentModel.findOneAndUpdate({order:order._id},{
-            refundId:refund.id,
-            paymentStatus:"Refunded"
+        const updatePayment = await paymentModel.findOneAndUpdate({ order: order._id }, {
+            refundId: refund.id,
+            paymentStatus: "Refunded"
         })
-        const updateOrder = await orderModel.findOneAndUpdate({_id:order._id},{
-            payment:"Refunded"
+        const refundDetails = await stripe.refunds.retrieve(refund.id)
+        const updateOrder = await orderModel.findOneAndUpdate({ _id: order._id }, {
+            payment: "Refunded",
+            refundDetails: {
+                destination_details: refundDetails.destination_details,
+                refundId: refund.id
+            }
+
         })
         res.status(200).send({
-            success:true,
-            message:"Refund initiated sucessfully",
-            refundId:refund.id
+            success: true,
+            message: "Refund initiated sucessfully",
+            refundId: refund.id
         })
     } catch (error) {
         console.log(error)
         res.status(500).send({
             success: false,
-            message: "error while getting invoice",
+            message: "error while creating refund",
             error
         })
 
     }
 
+}
+
+const orderStatsController = async (req, res) => {
+
+    try {
+        const orderStats = await orderModel.aggregate([
+            {
+                $group: {
+                    _id: {
+                        year: { $year: "$createdAt" },
+                        month: { $month: "$createdAt" },
+                        day: { $dayOfMonth: "$createdAt" }
+                    },
+                    totalOrders: { $sum: 1 },
+                    totalAmount: { $sum: "$totalAmount" }
+                }
+            },
+            {
+                $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1, "_id.paymentStatus": 1 }
+            }
+        ])
+        const orderPaymentBased = await orderModel.aggregate([
+            {
+              $group: {
+                _id: "$payment",  // Group by payment status
+                count: { $sum: 1 }       // Count the number of orders for each payment status
+              }
+            }
+          ])
+        const orderStatusBased = await orderModel.aggregate([
+            {
+              $group: {
+                _id: "$status",  // Group by status
+                count: { $sum: 1 }       // Count the number of orders for each status
+              }
+            }
+          ])
+        res.status(200).send({
+            success: true,
+            message: 'OrderStats Fetch Successfully',
+            orderStats,
+            orderPaymentBased,
+            orderStatusBased
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: "error while getting order stats",
+            error
+        })
+
+    }
 }
 
 
@@ -420,5 +491,6 @@ module.exports.getInvoiceController = getInvoiceController
 module.exports.checkoutController = checkoutController
 module.exports.webhookController = webhookController
 module.exports.refundController = refundController
+module.exports.orderStatsController = orderStatsController
 
 

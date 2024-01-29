@@ -43,7 +43,7 @@ const UserDashboard = () => {
             }
         } catch (error) {
             console.log(error)
-            alert("Something went wrong")
+            alert("Something Went Wrong")
         }
     }
     return (

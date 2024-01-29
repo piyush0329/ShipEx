@@ -96,16 +96,20 @@ const AdminOrders = () => {
                                 </table>
                                 <div className="container-fluid">
                                     {o?.products?.map((p, i) => (
-                                        <div className="row mb-2 p-3 flex-row" key={p._id}>
+                                        <div className="row px-3 flex-row" key={p._id}>
                                             <div className="col-md-8">
                                                 <p><strong>Description: </strong> {p.description.substring(0, 30)}</p>
-                                                <p><strong>Start Location: </strong>{p.startLocation.officeName}</p>
-                                                <p><strong>Destination Location: </strong>{p.destinationLocation.officeName}</p>
+                                                <p><strong>Start Location: </strong>{o.startLocation.officeName}</p>
+                                                <p><strong>Destination Location: </strong>{o.destinationLocation.officeName}</p>
                                                 <p><strong>Shipment Value: </strong>{p.shipmentValue}</p>
                                                 <p><strong>Shipping Price: </strong>{p.price}</p>
                                             </div>
                                         </div>
                                     ))}
+                                    {
+                                        o.refundDetails ? <div className='px-3 pb-3'><strong>Refund Status:</strong> {(o.refundDetails?.destination_details.card.reference_status !== "pending") ? `Refund successfully transfered to your original source. if not recieved by you then you can contact to  your bank with this reference id: ${o.refundDetails?.destination_details?.card?.reference}` : "Refund initiated successfully"} </div>
+                                        : ''
+                                    }
                                 </div>
                             </div>
                         );

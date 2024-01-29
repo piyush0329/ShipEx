@@ -50,6 +50,12 @@ const AdminMenu = () => {
           >
            Order Details
           </Link>
+          <Link
+            to="/dashboard/admin/order-stats"
+            className="list-group-item list-group-item-action tw-bg-lightpink"
+          >
+           Order Stats
+          </Link>
           
         </div>
       </div>

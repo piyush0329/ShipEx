@@ -25,8 +25,8 @@ const Orders = () => {
 
   const generateInvoice = async (o) => {
     try {
-      const { data,status } = await axios.post('/invoice-generate', { o })
-      if(status===200){
+      const { status } = await axios.post('/invoice-generate', { o })
+      if (status === 200) {
         alert('Invoice Generated Successfully')
       }
 
@@ -38,16 +38,17 @@ const Orders = () => {
 
   const cancelOrder = async (order) => {
     try {
+      // const id = 're_3ObzvrSB0wwAWHZh0ieG8VPX'
+      // const {data} = await axios.get(`/get-refund-status/${id}`)
+      // console.log(data)
       const { data } = await axios.post('/refund', { order })
       if (data.refundId) {
-        alert('refund initiated successfully')
+        alert('Refund Initiated Successfully')
         getOrders()
       }
     } catch (error) {
       console.log(error)
-
     }
-
     console.log("order cancelled")
   }
 
@@ -55,7 +56,6 @@ const Orders = () => {
     <div>
       <div className="container-fluid p-3 tw-bg-lightGrey">
         <div className="row">
-
           <div className="col-md-12">
             <h1 className='text-center'>All Orders</h1>
             {
@@ -109,18 +109,24 @@ const Orders = () => {
                     </table>
                     <div className="container-fluid">
                       {o?.products?.map((p, i) => (<>
-                        <div className="row flex-row" key={p._id}>
+                        <div className="row px-3 flex-row" key={p._id}>
                           <div className="">
                             <p><strong>{p.description}</strong></p>
-                            <p>Weight: {p.weight}kg</p>
-                            <p>Shipment Value: ₹{p.shipmentValue}</p>
-                            <p>Start Location: {p.startLocation.officeName}</p>
-                            <p>Destination Location: {p.destinationLocation.officeName}</p>
-                            <p><strong>Shipping Charge : ₹{p.price}</strong></p>
+                            <p><strong>Weight:</strong> {p.weight}kg</p>
+                            <p><strong>Shipment Value:</strong> ₹{p.shipmentValue}</p>
+                            <p><strong>Start Location:</strong> {o.startLocation.officeName}</p>
+                            <p><strong>Destination Location:</strong> {o.destinationLocation.officeName}</p>
+                            <p><strong>Shipping Charge:</strong> ₹{p.price}</p>
                           </div>
                         </div>
                       </>
                       ))}
+                      {
+                        o.refundDetails ?
+                          <div className='px-3 pb-3'>
+                            <strong>Refund Status:</strong> {(o.refundDetails?.destination_details.card.reference_status !== "pending") ? `Refund successfully transfered to your original source. if not recieved by you then you can contact to  your bank with this reference id: ${o.refundDetails?.destination_details?.card?.reference}` : "Refund initiated successfully"} </div>
+                          : ''
+                      }
                     </div>
                     <div>
                       {(o.status === "Delivered") ? <button onClick={() => generateInvoice(o)} className='tw-btn tw-bg-red tw-text-white'>Generate Invoice</button> : ""
