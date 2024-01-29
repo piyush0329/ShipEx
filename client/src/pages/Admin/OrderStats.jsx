@@ -152,7 +152,7 @@ const OrderStats = () => {
                 text: 'Orders', // Title for the Y-axis
               },
             },
-          },
+        },
     }
     const options4 = {
         scales: {
