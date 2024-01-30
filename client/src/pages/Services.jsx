@@ -14,6 +14,9 @@ const Services = () => {
     const [price, setPrice] = useState()
     const [cart,setCart]= useCart()
     const [auth]=useAuth()
+    // const {data} = useLoaderData()
+    // const offices = data?.offices
+    // console.log(data)
 
     // eslint-disable-next-line
     const fetchOffices = async () => {
@@ -175,4 +178,15 @@ const Services = () => {
     )
 }
 
+
 export default Services
+
+// export const fetchOffices = async () => {
+//     try {
+//         const res = await axios.get(`/get-office`)
+//         return res.json()
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
+

@@ -16,5 +16,4 @@ productRouter.delete('/delete-single-product/:pid', requireSignIn, deleteSingleP
 //api to delete all products based on user id
 productRouter.delete('/delete-products/:userid', requireSignIn, deleteProductsController)
 
-
 module.exports.productRouter = productRouter

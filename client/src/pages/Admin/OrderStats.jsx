@@ -4,14 +4,14 @@ import axios from 'axios'
 
 import {
     Chart as ChartJS,
-   
+
     BarElement,
     CategoryScale,
     LinearScale,
     Tooltip,
     Legend
 } from 'chart.js'
-import { Bar} from 'react-chartjs-2'
+import { Bar } from 'react-chartjs-2'
 // import './citation_script'
 ChartJS.register(BarElement,
     CategoryScale,
@@ -79,96 +79,132 @@ const OrderStats = () => {
         ],
     }
     const data3 = {
-        labels:labels2,
+        labels: labels2,
         datasets: [
             {
                 label: 'Total Orders',
                 backgroundColor: "rgba(255, 0, 79, 0.3)",
-                borderColor:  "rgba(255, 0, 79, 1)",
+                borderColor: "rgba(255, 0, 79, 1)",
                 borderWidth: 3,
                 hoverBackgroundColor: "rgba(255, 0, 79, 0.8)",
-                hoverBorderColor:  "rgba(255, 0, 79, 1)",
+                hoverBorderColor: "rgba(255, 0, 79, 1)",
                 data: totalOrdersPayment,
             },
         ],
     }
     const data4 = {
-        labels:labels3,
+        labels: labels3,
         datasets: [
             {
                 label: 'Total Orders',
                 backgroundColor: "rgba(145, 10, 103, 0.3)",
-                borderColor:  "rgba(145, 10, 103, 1)",
+                borderColor: "rgba(145, 10, 103, 1)",
                 borderWidth: 3,
                 hoverBackgroundColor: "rgba(145, 10, 103, 0.8)",
-                hoverBorderColor:  "rgba(145, 10, 103, 1)",
-                data:totalOrderStatusBased,
+                hoverBorderColor: "rgba(145, 10, 103, 1)",
+                data: totalOrderStatusBased,
             },
         ],
     }
     const options = {
         scales: {
             x: {
-              title: {
-                display: true,
-                text: 'Date', // Title for the X-axis
-              },
+                title: {
+                    display: true,
+                    text: 'Date',
+                    font:{
+                        weight:'bold',
+                        size:14
+                    }
+                },
             },
             y: {
-              title: {
-                display: true,
-                text: 'Amount', // Title for the Y-axis
-              },
+                title: {
+                    display: true,
+                    text: 'Amount', 
+                    font:{
+                        weight:'bold',
+                        size:14
+                    }
+                }, 
             },
-          },
+        },
     }
     const options2 = {
         scales: {
             x: {
-              title: {
-                display: true,
-                text: 'Date', // Title for the X-axis
-              },
+                title: {
+                    display: true,
+                    text: 'Date', 
+                    font:{
+                        weight:'bold',
+                        size:14
+                    }
+                },
             },
             y: {
-              title: {
-                display: true,
-                text: 'Orders', // Title for the Y-axis
-              },
+                title: {
+                    display: true,
+                    text: 'Orders',
+                    font:{
+                        weight:'bold',
+                        size:14
+                    }
+                }, 
             },
-          },
+        },
     }
     const options3 = {
         scales: {
             x: {
-              title: {
-                display: true,
-                text: 'Payment Status', // Title for the X-axis
-              },
+                title: {
+                    display: true,
+                    text: 'Payment Status',
+                    font:{
+                        weight:'bold',
+                        size:14
+                    }
+                },
+                
             },
             y: {
-              title: {
-                display: true,
-                text: 'Orders', // Title for the Y-axis
-              },
+                title: {
+                    display: true,
+                    text: 'Orders',
+                    font:{
+                        weight:'bold',
+                        size:14
+                    }
+                },
+                
             },
         },
     }
     const options4 = {
         scales: {
             x: {
-              title: {
-                display: true,
-                text: 'Order Status', // Title for the X-axis
-              },
+                title: {
+                    display: true,
+                    text: 'Order Status',
+                    font:{
+                        weight:'bold',
+                        size:14
+                    }
+                },
+                
             },
             y: {
-              title: {
-                display: true,
-                text: 'Orders', // Title for the Y-axis
-              },
+                title: {
+                    display: true,
+                    text: 'Orders',
+                    font:{
+                        weight:'bold',
+                        size:14
+                    }
+                },
+               
             },
-          },
+        },
     }
 
     return (
@@ -180,27 +216,25 @@ const OrderStats = () => {
                     </div>
                     <div className="col-md-9">
                         <div className="card p-3 tw-bg-light">
-                            <h4 className='text-center'>Order Statistics</h4>
+                            <h4 className='text-center'>Orders Statistics</h4>
                             <div>
                                 <div className='row'>
-                                    <div className='col-12 col-md-6 '>
-                                        <Bar data={data} options={options} />
-                                    </div>
                                     <div className='col-12 col-md-6'>
                                         <Bar data={data2} options={options2} />
                                     </div>
-                                </div>
-                                <div className='row'>
-                                    <div className='col-12 col-md-6 '>
+                                    <div className='col-12 col-md-6'>
                                         <Bar data={data3} options={options3} />
                                     </div>
-                                    <div className='col-12 col-md-6 '>
+                                </div>
+                                <div className='row mt-4'>
+                                    <div className='col-12 col-md-6'>
+                                        <Bar data={data} options={options} />
+                                    </div>
+                                    <div className='col-12 col-md-6'>
                                         <Bar data={data4} options={options4} />
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>

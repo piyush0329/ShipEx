@@ -41,6 +41,7 @@ const AdminOrders = () => {
         try {
             await axios.put(`/order-status/${orderId}`, { status: value })
             alert('Status Updated Successfully')
+            getOrders(page);
         } catch (error) {
             console.log(error);
         }
@@ -48,7 +49,6 @@ const AdminOrders = () => {
 
     return (
         <div className='container-fluid p-3 tw-bg-lightGrey'>
-
             <div className='row'>
                 <div className="col col-md-3">
                     <AdminMenu />
@@ -74,7 +74,7 @@ const AdminOrders = () => {
                                         <tr>
                                             <td>{i + 1}</td>
                                             <td>
-                                                <Select
+                                                {o.status==="Cancelled"?"Cancelled":<Select
                                                     bordered={false}
                                                     onChange={(value) => handleChange(o._id, value)}
                                                     defaultValue={o?.status}
@@ -85,6 +85,7 @@ const AdminOrders = () => {
                                                         </Option>
                                                     ))}
                                                 </Select>
+                                                }
                                             </td>
                                             <td>{o?.buyer?.name}</td>
                                             <td>{moment(o?.createdAt).fromNow()}</td>

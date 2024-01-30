@@ -91,14 +91,16 @@ const CartPage = () => {
               </div>
             ))}
           </div>
-          <div className='col-md-5 mt-2 text-center'>
+          {
+            cart?.length ? <div className='col-md-5 mt-2 text-center'>
             <h2>Cart Summary</h2>
             <h5>Total | Checkout | Payment</h5>
             <h4>Total : {totalPrice()} </h4>
             <br />
             <br />
             {cart.length !== 0 ? <button onClick={handleMakePayment} className='tw-btn tw-btn-outline'>Make Payment</button> : ""}
-          </div>
+          </div>:""
+          }
         </div>
       </div>
     </div>

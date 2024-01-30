@@ -43,7 +43,7 @@ const Login = () => {
         <div className='d-flex flex-column tw-bg-lightGrey'>
             <h1 className='text-center'>Login</h1>
 
-            <div className='border'>
+            <div className='border p-4'>
                 <form onSubmit={handleLogin} >
                     <div className="mb-3">
                         <label className="form-label">Email address</label>

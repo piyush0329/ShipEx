@@ -51,7 +51,7 @@ const About = () => {
           <div className='p-4 row justify-content-around'>
             <div className='col col-md-5' >
               <h4 className='text-center'>Our Location</h4>
-              <iframe className='text-center' title='Our Location' src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55097.91283227362!2d78.02716159999999!3d30.333337599999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1704449867793!5m2!1sen!2sin" width={550} height={300} style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+              <iframe className='text-center' title='Our Location' src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d55097.91283227362!2d78.02716159999999!3d30.333337599999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1704449867793!5m2!1sen!2sin" width={350} height={300} style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
             </div>
             <div className='col col-md-5'>
               <h4 className='text-center'>Contact Us</h4>

@@ -3,8 +3,8 @@ import axios from "axios";
 import { useAuth } from "./auth";
 
 const CartContext = createContext();
+
 const CartProvider = ({ children }) => {
-  
   const [cart, setCart] = useState([]);
   const [auth] = useAuth()
   //const auth = localStorage.getItem("auth")

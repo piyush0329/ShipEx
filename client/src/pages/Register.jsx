@@ -35,7 +35,7 @@ const Register = () => {
     return (
         <div className='d-flex flex-column tw-bg-lightGrey'>
             <h1 className='text-center'>Register</h1>
-            <div className='border'>
+            <div className='border p-4'>
                 <form onSubmit={handleRegister}>
                     <div className="mb-3">
                         <label className="form-label">Name</label>

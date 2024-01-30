@@ -7,7 +7,7 @@ import moment from 'moment'
 const { Option } = Select
 
 const EmployeeOrders = () => {
-    const [status] = useState(["Out for delivery", "Delivered", "Cancelled"])
+    const [status] = useState(["Out for delivery", "Delivered"])
     const [orders, setOrders] = useState([])
     let [page, setPage] = useState()
     const limit =5
@@ -74,7 +74,7 @@ const EmployeeOrders = () => {
                                         <tr>
                                             <td>{i + 1}</td>
                                             <td>
-                                                <Select
+                                            {o.status==="Cancelled"?"Cancelled":<Select
                                                     bordered={false}
                                                     onChange={(value) => handleChange(o._id, value)}
                                                     defaultValue={o?.status}
@@ -85,6 +85,7 @@ const EmployeeOrders = () => {
                                                         </Option>
                                                     ))}
                                                 </Select>
+                                                }
                                             </td>
                                             <td>{o?.buyer?.name}</td>
                                             <td>{moment(o?.createdAt).fromNow()}</td>

@@ -12,13 +12,13 @@ const IndexPage = () => {
       <div id="carouselExampleAutoplaying" className="carousel slide" data-bs-ride="carousel">
         <div className="carousel-inner">
           <div className="carousel-item active">
-            <img style={{ height: 550, objectFit: 'cover' }} src="https://media.istockphoto.com/id/1329695941/photo/smart-warehouse-management-system.webp?b=1&s=170667a&w=0&k=20&c=hk1mG4u7I0gNYj2HTqcsL_sxkWnN6CypIA3m_4YxbuM=" className="d-block w-100 rounded" alt="..." />
+            <img style={{ height: 500, objectFit: 'fill' }} src="https://images.pexels.com/photos/1117210/pexels-photo-1117210.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" className="d-block w-100 rounded" alt="..." />
           </div>
           <div className="carousel-item">
-            <img style={{ height: 550, objectFit: 'cover' }} src="https://images.unsplash.com/photo-1449247666642-264389f5f5b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHNoaXBwaW5nfGVufDB8fDB8fHww" className="d-block w-100 rounded" alt="..." />
+            <img style={{ height: 500, objectFit: 'fill' }} src="https://images.pexels.com/photos/5025643/pexels-photo-5025643.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" className="d-block w-100 rounded" alt="..." />
           </div>
           <div className="carousel-item">
-            <img style={{ height: 550, objectFit: 'cover' }} src="https://plus.unsplash.com/premium_photo-1661909560839-52369c5f4d1f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHNoaXBwaW5nfGVufDB8fDB8fHww" className="d-block w-100 rounded" alt="..." />
+            <img style={{ height: 500, objectFit: 'fill' }} src="https://images.pexels.com/photos/4246119/pexels-photo-4246119.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" className="d-block w-100 rounded" alt="..." />
           </div>
         </div>
         <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
@@ -51,7 +51,7 @@ const IndexPage = () => {
           </div>
         </div>
         <div className="col-12 col-sm-5">
-          <img className='rounded img-fluid h-500 w-500 ' src='https://images.unsplash.com/photo-1543499459-d1460946bdc6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y291cmllcnxlbnwwfHwwfHx8MA%3D%3D' alt='...' />
+          <img className='rounded img-fluid' src='https://images.unsplash.com/photo-1543499459-d1460946bdc6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y291cmllcnxlbnwwfHwwfHx8MA%3D%3D' alt='...' />
         </div>
       </div>
       <br></br>

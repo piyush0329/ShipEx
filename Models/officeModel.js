@@ -5,24 +5,24 @@ const officeSchema = new mongoose.Schema({
     officeId: {
         type: Number,
         required: true,
-        unique:true,
+        unique: true,
         trim: true,
-    },   
+    },
     officeName: {
         type: String,
         required: true,
         trim: true,
-    },   
+    },
     state: {
         type: String,
         required: true,
         trim: true,
-    },   
+    },
     city: {
-        type:String,
+        type: String,
         required: true,
         trim: true,
-    }, 
+    },
     pincode: {
         type: String,
         required: true,
@@ -31,22 +31,22 @@ const officeSchema = new mongoose.Schema({
     country: {
         type: String,
         required: true,
-    },    
+    },
     locality: {
-        type:String,
+        type: String,
         required: true,
         trim: true,
-    },   
+    },
     longitude: {
-        type:Number,
+        type: Number,
         required: true,
         trim: true,
-    },   
+    },
     latitude: {
-        type:Number,
+        type: Number,
         required: true,
         trim: true,
-    },   
+    },
 }, {
     timestamps: true
 })

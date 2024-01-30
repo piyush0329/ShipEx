@@ -38,9 +38,6 @@ const Orders = () => {
 
   const cancelOrder = async (order) => {
     try {
-      // const id = 're_3ObzvrSB0wwAWHZh0ieG8VPX'
-      // const {data} = await axios.get(`/get-refund-status/${id}`)
-      // console.log(data)
       const { data } = await axios.post('/refund', { order })
       if (data.refundId) {
         alert('Refund Initiated Successfully')

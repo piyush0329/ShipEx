@@ -22,9 +22,13 @@ app.use(officeRouter)
 app.use(productRouter)
 app.use(orderRouter)
 
-app.get("/test", (req, res) => {
+app.get("/", (req, res) => {
     res.send("hello world")
 })
+// app.get("**", (req, res) => {
+//     res.send("invalid url")
+// })
+
 
 app.listen(8000, (req, res) => {
     console.log("server is running")

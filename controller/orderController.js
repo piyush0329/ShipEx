@@ -51,6 +51,7 @@ const getBuyerOrders = async (req, res) => {
                 const refund = await stripe.refunds.retrieve(order.refundDetails.refundId)
                 if (refund.destination_details.card.reference != "pending") {
                     const updateorder = await orderModel.findOneAndUpdate({ _id: order._id }, {
+                        status: 'Cancelled',
                         refundDetails: {
                             destination_details: {
                                 card: {
@@ -82,6 +83,28 @@ const getAllOrdersController = async (req, res) => {
         const { page, limit } = req.query
         const orders = await orderModel.find({}).skip((page - 1) * limit).limit(limit).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
         const orderlength = (await orderModel.find({}).populate("buyer", "name").sort({ createdAt: -1 })).length
+        orders.forEach(async (order) => {
+            if (order.refundDetails !== null) {
+                const refund = await stripe.refunds.retrieve(order.refundDetails.refundId)
+                if (refund.destination_details.card.reference != "pending") {
+                    const updateorder = await orderModel.findOneAndUpdate({ _id: order._id }, {
+                        status: 'Cancelled',
+                        refundDetails: {
+                            destination_details: {
+                                card: {
+                                    reference: refund.destination_details.card.reference,
+                                    reference_status: refund.destination_details.card.reference_status,
+                                    reference_type: refund.destination_details.card.reference_type,
+                                    type: refund.destination_details.card.type
+                                },
+                                type: "card"
+                            },
+                            refundId: refund.id,
+                        }
+                    })
+                }
+            }
+        })
         res.status(200).send({
             success: true,
             orders,
@@ -102,8 +125,8 @@ const getPaginationOrderController = async (req, res) => {
         const filters = {}
         if (status) filters.status = status
         if (payment) filters.payment = payment
-        if (source) filters["products.startLocation.officeName"] = source
-        if (destination) filters["products.destinationLocation.officeName"] = destination
+        if (source) filters.startLocation = source
+        if (destination) filters.destinationLocation = destination
         const orderlength = (await orderModel.find(filters).populate("buyer", "name").sort({ createdAt: -1 })).length
         const orders = (await orderModel.find(filters).skip((page - 1) * limit).limit(limit).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 }))
 
@@ -189,6 +212,29 @@ const orderStatusController = async (req, res) => {
     try {
         const { orderId } = req.params
         const { status } = req.body
+        if (status === 'Cancelled') {
+            const order = await orderModel.findOne({ _id: orderId })
+            if (order.payment === "Payment Done") {
+                const payment = await paymentModel.findOne({ order: order._id })
+                const session = await stripe.checkout.sessions.retrieve(payment.sessionId)
+                const refund = await stripe.refunds.create({
+                    payment_intent: session.payment_intent,
+                    amount: parseInt(order.totalAmount * 100),
+                });
+                const updatePayment = await paymentModel.findOneAndUpdate({ order: order._id }, {
+                    refundId: refund.id,
+                    paymentStatus: "Refunded"
+                })
+                const refundDetails = await stripe.refunds.retrieve(refund.id)
+                const updateOrder = await orderModel.findOneAndUpdate({ _id: order._id }, {
+                    payment: "Refunded",
+                    refundDetails: {
+                        destination_details: refundDetails.destination_details,
+                        refundId: refund.id
+                    }
+                })
+            }
+        }
         const orders = await orderModel.findByIdAndUpdate(orderId, { status }, { new: true })
         res.json(orders)
     } catch (error) {
@@ -406,7 +452,6 @@ const refundController = async (req, res) => {
                 destination_details: refundDetails.destination_details,
                 refundId: refund.id
             }
-
         })
         res.status(200).send({
             success: true,
@@ -426,7 +471,6 @@ const refundController = async (req, res) => {
 }
 
 const orderStatsController = async (req, res) => {
-
     try {
         const orderStats = await orderModel.aggregate([
             {
@@ -441,25 +485,25 @@ const orderStatsController = async (req, res) => {
                 }
             },
             {
-                $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1, "_id.paymentStatus": 1 }
+                $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1, "_id.payment": 1 }
             }
         ])
         const orderPaymentBased = await orderModel.aggregate([
             {
-              $group: {
-                _id: "$payment",  // Group by payment status
-                count: { $sum: 1 }       // Count the number of orders for each payment status
-              }
+                $group: {
+                    _id: "$payment",
+                    count: { $sum: 1 }
+                }
             }
-          ])
+        ])
         const orderStatusBased = await orderModel.aggregate([
             {
-              $group: {
-                _id: "$status",  // Group by status
-                count: { $sum: 1 }       // Count the number of orders for each status
-              }
+                $group: {
+                    _id: "$status",
+                    count: { $sum: 1 }
+                }
             }
-          ])
+        ])
         res.status(200).send({
             success: true,
             message: 'OrderStats Fetch Successfully',

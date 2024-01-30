@@ -33,9 +33,10 @@ const Header = () => {
                             <li className="nav-item">
                                 <Link to={'/about'} className="nav-link text-white" >About</Link>
                             </li>
-                            
+
                             {
                                 !auth.user ? (<>
+
                                     <li>
                                         <Link to="/register" className="nav-link text-white">Register
                                         </Link>
@@ -45,6 +46,15 @@ const Header = () => {
                                             Login
                                         </Link>
                                     </li>
+                                    <li>
+                                        <Link to={'/cart'} className='nav-link '>
+                                            <div className="tw-p-0 tw-bg-red text-white tw-border-none">
+                                                Cart
+                                                <span className="tw-badge tw-rounded-full">{cart.length}</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+
                                 </>
                                 ) : (
                                     <>

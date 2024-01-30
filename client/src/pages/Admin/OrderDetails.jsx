@@ -17,8 +17,6 @@ const OrderDetails = () => {
     let [page, setPage] = useState()
     const [totalPages, setTotalPages] = useState(1)
     const [params, setParams] = useState({ limit: limit, page: 1 })
-
-
     const pageButtons = Array.from({ length: totalPages }, (_, index) => index + 1);
 
     const filterSubmit = async (pageNumber = 1) => {
@@ -128,7 +126,7 @@ const OrderDetails = () => {
                                             <Select defaultValue={'Select any option'} onChange={(e) => { setParams((prev) => { return { ...prev, source: e } }) }}>
                                                 <Option>Select any option</Option>
                                                 {offices.map((o, i) => (
-                                                    <Option key={i} value={o.officeName}>
+                                                    <Option key={i} value={o._id}>
                                                         {o.officeName}
                                                     </Option>
                                                 ))}
@@ -138,7 +136,7 @@ const OrderDetails = () => {
                                             <Select defaultValue={'Select any option'} onChange={(e) => { setParams((prev) => { return { ...prev, destination: e } }) }}>
                                                 <Option>Select any option</Option>
                                                 {offices.map((o, i) => (
-                                                    <Option key={i} value={o.officeName}>
+                                                    <Option key={i} value={o._id}>
                                                         {o.officeName}
                                                     </Option>
                                                 ))}
@@ -218,13 +216,10 @@ const OrderDetails = () => {
                         </div>
                     </div>
                 </div>
-
             </div>
-
-
-
         </div>
     )
 }
 
 export default OrderDetails
+ 
