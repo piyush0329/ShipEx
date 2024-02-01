@@ -5,12 +5,12 @@ import axios from 'axios'
 const Register = () => {
 
     const [name, setName] = useState('')
-    const [roll, setRoll] = useState()
-    const [classname, setClassname] = useState()
+    const [roll, setRoll] = useState('')
+    const [classname, setClassname] = useState('')
     const [email, setEmail] = useState('')
-    const [phone, setPhone] = useState()
+    const [phone, setPhone] = useState('')
     const [gender, setGender] = useState('')
-    const [dob, setDob] = useState()
+    const [dob, setDob] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
 
@@ -21,9 +21,11 @@ const Register = () => {
             const res = await axios.post('/register', { name, roll, classname, email, password, phone, gender, dob })
             if (res && res.data.success) {
                 alert(res.data && res.data.message);
+                setPassword('')
                 navigate('/login')
 
             } else {
+                setPassword('')
                 alert(res.data.message);
             }
         } catch (error) {

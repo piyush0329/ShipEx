@@ -523,6 +523,24 @@ const orderStatsController = async (req, res) => {
 }
 
 
+
+const getDeliveryOrdersController = async (req, res) => {
+    try {
+
+        const orders = await orderModel.find({ payment:'Payment Done',status:"Not Process" }).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
+        
+        res.json(orders)
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error while getting order",
+            error
+        })
+    }
+}
+
+
 module.exports.addOrderController = addOrderController
 module.exports.getBuyerOrders = getBuyerOrders
 module.exports.getAllOrdersController = getAllOrdersController
@@ -536,5 +554,6 @@ module.exports.checkoutController = checkoutController
 module.exports.webhookController = webhookController
 module.exports.refundController = refundController
 module.exports.orderStatsController = orderStatsController
+module.exports.getDeliveryOrdersController = getDeliveryOrdersController
 
 

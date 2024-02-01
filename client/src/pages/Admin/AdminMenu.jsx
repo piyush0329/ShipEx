@@ -39,6 +39,12 @@ const AdminMenu = () => {
             Create Office
           </Link>
           <Link
+            to="/dashboard/admin/add-vehicle"
+            className="list-group-item list-group-item-action tw-bg-lightpink"
+          >
+            Add Vehicle
+          </Link>
+          <Link
             to="/dashboard/admin/update-orders"
             className="list-group-item list-group-item-action tw-bg-lightpink"
           >
@@ -55,6 +61,12 @@ const AdminMenu = () => {
             className="list-group-item list-group-item-action tw-bg-lightpink"
           >
            Order Stats
+          </Link>
+          <Link
+            to="/dashboard/admin/delivery"
+            className="list-group-item list-group-item-action tw-bg-lightpink"
+          >
+           Orders Shipping
           </Link>
           
         </div>

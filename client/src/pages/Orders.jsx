@@ -2,6 +2,7 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../context/auth'
 import axios from 'axios'
+import Spinner from '../component/Spinner'
 
 const Orders = () => {
 
@@ -11,7 +12,10 @@ const Orders = () => {
     try {
       const buyerid = auth?.user._id
       const { data } = await axios.get(`/get-orders/${buyerid}`)
-      setOrders(data)
+      setTimeout(() => {
+        setOrders(data)
+      }, 400);
+      
     } catch (error) {
       console.log(error);
     }
@@ -50,6 +54,7 @@ const Orders = () => {
   }
 
   return (
+    orders.length===0 ? <Spinner/>:
     <div>
       <div className="container-fluid p-3 tw-bg-lightGrey">
         <div className="row">

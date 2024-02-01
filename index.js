@@ -6,6 +6,7 @@ const { officeRouter } = require('./Router/officeRoutes')
 const { productRouter } = require('./Router/productRoutes')
 const { orderRouter } = require('./Router/orderRoutes')
 const { webhookController } = require('./controller/orderController')
+const { deliveryRouter } = require('./Router/deliveryRoutes')
 
 const app = express()
 connectDB()
@@ -21,6 +22,7 @@ app.use(authRouter)
 app.use(officeRouter)
 app.use(productRouter)
 app.use(orderRouter)
+app.use(deliveryRouter)
 
 app.get("/", (req, res) => {
     res.send("hello world")

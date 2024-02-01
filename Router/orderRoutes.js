@@ -1,6 +1,6 @@
 const express = require('express')
 const { requireSignIn, isAdmin, isEmployee } = require('../middleware/authMiddleware')
-const { addOrderController, getBuyerOrders, getAllOrdersController, getEmployeeAllOrdersController, orderStatusController, employeeOrderStatusController, getPaginationOrderController, getExcelSheetController, getInvoiceController, checkoutController,orderStatsController, refundController } = require('../controller/orderController')
+const { addOrderController, getBuyerOrders, getAllOrdersController, getEmployeeAllOrdersController, orderStatusController, employeeOrderStatusController, getPaginationOrderController, getExcelSheetController, getInvoiceController, checkoutController,orderStatsController, refundController, getDeliveryOrdersController } = require('../controller/orderController')
 const orderRouter = express.Router()
 const stripe = require('stripe')('sk_test_51OZSAbSB0wwAWHZh7j03Dz8PIxm8eqfQGaGHVCbnAhTqwpKLV3YP5FEpA4ttyDFmVun8QeT0J3jwmwX0gqvApwW800srmgFa07')
 
@@ -27,22 +27,9 @@ orderRouter.post('/invoice-generate', requireSignIn, getInvoiceController)
 orderRouter.post('/create-checkout-session', requireSignIn, checkoutController)
 //api to  create the refund for the cancelled order
 orderRouter.post('/refund', requireSignIn, refundController)
-
+//api to get the order statistics in the admin panel 
 orderRouter.get('/order-statistics', requireSignIn,isAdmin, orderStatsController)
-
-
-orderRouter.get('/get-refund-status/:id', async (req, res) => {
-    const { id } = req.params
-    try {
-        const refund = await stripe.refunds.retrieve(id);
-        console.log(refund)
-    } catch (error) {
-        console.log(error)
-    }
-
-})
-
-
+orderRouter.get('/delivery-orders', requireSignIn,isAdmin,getDeliveryOrdersController)
 
 
 module.exports.orderRouter = orderRouter

@@ -25,8 +25,6 @@ const Login = () => {
                     employee: res.data.employee,
                     token: res.data.token
                   })
-
-
                 localStorage.setItem('auth', JSON.stringify(res.data))
                 navigate(location.state || "/");
             }else{

@@ -6,12 +6,12 @@ import { useAuth } from '../context/auth'
 const Services = () => {
 
     const [offices, setOffices] = useState([])
-    const [startLocation, setStartLocation] = useState()
-    const [destinationLocation, setDestinationLocation] = useState()
-    const [weight, setWeight] = useState()
-    const [description, setDescription] = useState()
-    const [shipmentValue, setShipmentValue] = useState()
-    const [price, setPrice] = useState()
+    const [startLocation, setStartLocation] = useState('')
+    const [destinationLocation, setDestinationLocation] = useState('')
+    const [weight, setWeight] = useState('')
+    const [description, setDescription] = useState('')
+    const [shipmentValue, setShipmentValue] = useState('')
+    const [price, setPrice] = useState('')
     const [cart,setCart]= useCart()
     const [auth]=useAuth()
     // const {data} = useLoaderData()
@@ -61,6 +61,13 @@ const Services = () => {
                 const {data,status}= await axios.post(`/add-product`,{startLocation,destinationLocation,weight,description,shipmentValue,price,userid:auth.user._id})
                 if (status===200 && data?.success) {
                     setCart([...cart,data.updatedProduct])
+                    setStartLocation('')
+                    setDestinationLocation('')
+                    setWeight(0)
+                    setDescription('')
+                    setShipmentValue('')
+                    setPrice('')
+                
                     alert('product added to cart')
                 } else if(status===200 && (!data?.success)) {
                     alert("Already one product present in cart make payment for it first then add other or remove it")
@@ -181,12 +188,4 @@ const Services = () => {
 
 export default Services
 
-// export const fetchOffices = async () => {
-//     try {
-//         const res = await axios.get(`/get-office`)
-//         return res.json()
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
 

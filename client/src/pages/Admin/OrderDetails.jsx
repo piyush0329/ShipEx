@@ -10,7 +10,7 @@ const { Option } = Select
 const OrderDetails = () => {
     const [orders, setOrders] = useState([])
     const [status] = useState(["Not Process", "Processing", "Shipped", "Out for delivery", "Delivered", "Cancelled"])
-    const [paymentStatus] = useState(["Not Done", "Pending", "Cancelled", "Payment Done"])
+    const [paymentStatus] = useState(["Payment Done", "Refunded", "Pending"])
     const [offices, setOffices] = useState([])
     const [auth] = useAuth()
     const limit = 5
@@ -222,4 +222,4 @@ const OrderDetails = () => {
 }
 
 export default OrderDetails
- 
+

@@ -74,7 +74,7 @@ const AdminOrders = () => {
                                         <tr>
                                             <td>{i + 1}</td>
                                             <td>
-                                                {o.status==="Cancelled"?"Cancelled":<Select
+                                                {o.status === "Cancelled" ? "Cancelled" : <Select
                                                     bordered={false}
                                                     onChange={(value) => handleChange(o._id, value)}
                                                     defaultValue={o?.status}
@@ -109,7 +109,7 @@ const AdminOrders = () => {
                                     ))}
                                     {
                                         o.refundDetails ? <div className='px-3 pb-3'><strong>Refund Status:</strong> {(o.refundDetails?.destination_details.card.reference_status !== "pending") ? `Refund successfully transfered to your original source. if not recieved by you then you can contact to  your bank with this reference id: ${o.refundDetails?.destination_details?.card?.reference}` : "Refund initiated successfully"} </div>
-                                        : ''
+                                            : ''
                                     }
                                 </div>
                             </div>

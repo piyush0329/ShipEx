@@ -16,7 +16,6 @@ const AdminDashboard = () => {
           </div>
 
           <div className="col-12 col-md-9">
-            <br />
             <div className="card p-3 tw-bg-light">
               <h5> Admin Name: {auth?.user?.name}</h5>
               <h5> Admin Email: {auth?.user?.email}</h5>
