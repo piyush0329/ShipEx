@@ -5,7 +5,7 @@ import axios from 'axios'
 
 const CreateOffice = () => {
 
-    const [officeId, setOfficeId] = useState()
+    const [officeId, setOfficeId] = useState('')
     const [state, setState] = useState('')
     const [city, setCity] = useState('')
     const [country, setCountry] = useState('India')
@@ -13,7 +13,7 @@ const CreateOffice = () => {
     const [locality, setLocality] = useState('')
     const [longitude, setLongitude] = useState('')
     const [latitude, setLatitude] = useState('')
-    const [officeName, setOfficeName] = useState()
+    const [officeName, setOfficeName] = useState('')
 
     const handleCreateOffice = async (e) => {
         e.preventDefault()

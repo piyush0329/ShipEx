@@ -29,6 +29,7 @@ import OrderDetails from './pages/Admin/OrderDetails';
 import OrderStats from './pages/Admin/OrderStats';
 import AddVehicle from './pages/Admin/AddVehicle';
 import DeliveryOrderMapping from './pages/Admin/DeliveryOrderMapping';
+import StatusLog from './pages/Admin/StatusLog';
 
 
 axios.defaults.baseURL = 'http://localhost:8000'
@@ -64,6 +65,7 @@ function App() {
           <Route path='admin/order-details' element={<OrderDetails />} />
           <Route path='admin/order-stats' element={<OrderStats />} />
           <Route path='admin/delivery' element={<DeliveryOrderMapping />} />
+          <Route path='admin/status-log' element={<StatusLog />} />
         </Route>
         <Route path='/dashboard' element={<EmployeeRoute />}>
           <Route path='employee' element={<EmployeeDashboard />} />

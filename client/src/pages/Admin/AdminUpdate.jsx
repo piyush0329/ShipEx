@@ -8,11 +8,11 @@ import moment from 'moment'
 const AdminUpdate = () => {
     const [email, setEmail] = useState('')
     const [name, setName] = useState('')
-    const [roll, setRoll] = useState()
-    const [classname, setClassname] = useState()
-    const [phone, setPhone] = useState()
+    const [roll, setRoll] = useState('')
+    const [classname, setClassname] = useState('')
+    const [phone, setPhone] = useState('')
     const [gender, setGender] = useState('')
-    const [dob, setDob] = useState()
+    const [dob, setDob] = useState('')
     const [aadharNumber, setAadharNumber] = useState('')
     const [dlNumber, setDlNumber] = useState('')
     const [address, setAddress] = useState('')
@@ -47,6 +47,7 @@ const AdminUpdate = () => {
                 ls.user = data.updatedUser
                 ls.employee = data.updatedEmployee
                 localStorage.setItem('auth', JSON.stringify(ls))
+
                 alert("Admin Data Updated Successfully")
             }
         } catch (error) {

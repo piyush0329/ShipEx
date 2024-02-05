@@ -9,16 +9,16 @@ const EmployeeUpdate = () => {
 
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
-    const [roll, setRoll] = useState()
-    const [classname, setClassname] = useState()
-    const [role, setRole] = useState()
-    const [phone, setPhone] = useState()
+    const [roll, setRoll] = useState('')
+    const [classname, setClassname] = useState('')
+    const [role, setRole] = useState('')
+    const [phone, setPhone] = useState('')
     const [gender, setGender] = useState('')
-    const [dob, setDob] = useState()
+    const [dob, setDob] = useState('')
     const [aadharNumber, setAadharNumber] = useState('')
     const [dlNumber, setDlNumber] = useState('')
     const [address, setAddress] = useState('')
-    const [password, setPassword] = useState()
+    const [password, setPassword] = useState('')
     const [selectedOption, setSelectedOption] = useState('update')
 
     const fetchEmployee = async (e) => {
@@ -58,6 +58,18 @@ const EmployeeUpdate = () => {
                 alert("error while updating Employee")
             }
             else {
+                    setEmail('')
+                    setName('')
+                    setRoll('')
+                    setClassname('')
+                    setRole('')
+                    setPhone('')
+                    setGender('')
+                    setDob('')
+                    setAadharNumber('')
+                    setDlNumber('')
+                    setAddress('')
+                    setPassword('')
                 alert("Employee Updated Successfully")
             }
         } catch (error) {

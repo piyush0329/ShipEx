@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import AdminMenu from './AdminMenu'
 import { Select } from 'antd'
 import axios from 'axios'
+import { useAuth } from '../../context/auth'
 const { Option } = Select
 
 const DeliveryOrderMapping = () => {
-
-    const [vehicles, setVehicles] = useState()
+    const [auth] = useAuth()
+    const [vehicles, setVehicles] = useState([])
     const [selectedVehicle, setSelectedVehicle] = useState(null)
     const [selectedVehicleData, setSelectedVehicleData] = useState('')
     const [orders, setOrders] = useState([])
@@ -37,71 +38,72 @@ const DeliveryOrderMapping = () => {
     }
     const getOrders = async () => {
         try {
-            if (selectedVehicle !== null) {
-                const { data } = await axios.get(`/delivery-orders`)
-                setOrders(data)
-            }
+            const { data } = await axios.get(`/delivery-orders`)
+            setOrders(data)
         } catch (error) {
             console.log(error)
         }
     }
     useEffect(() => {
-        getSelectedVehicles()
         getOrders()
+    }, [])
+    useEffect(() => {
+        getSelectedVehicles()
     }, [selectedVehicle])
 
 
     const handleCheckboxChange = (event) => {
         const orderId = event.target.value;
         const isChecked = event.target.checked;
-
         setCheckedOrders((prevCheckedOrders) => {
             if (isChecked && !prevCheckedOrders.includes(orderId)) {
                 setSelectedVehicleData((prev) => {
-                    const order = orders.filter((id) => id._id === orderId)
+                    const order = orders.find((o) => o._id === orderId);
                     return {
                         ...prev,
-                        capacity: prev.capacity - order[0].products[0].weight
-                    }
-                })
+                        capacity: prev.capacity - order.products[0].weight,
+                    };
+                });
                 return [...prevCheckedOrders, orderId];
-
             } else if (!isChecked && prevCheckedOrders.includes(orderId)) {
                 setSelectedVehicleData((prev) => {
-                    const order = orders.filter((id) => id._id === orderId)
+                    const order = orders.find((o) => o._id === orderId);
                     return {
                         ...prev,
-                        capacity: prev.capacity + order[0].products[0].weight
-                    }
-                })
+                        capacity: prev.capacity + order.products[0].weight,
+                    };
+                });
                 return prevCheckedOrders.filter((id) => id !== orderId);
             } else {
                 return prevCheckedOrders;
             }
         });
-
-
     };
+
     const handleOrderMapping = async (e) => {
         e.preventDefault()
         try {
             if (checkedOrders.length > 0) {
-                const { data } = await axios.post('/map-orders', { vehicleId: selectedVehicle, orders: checkedOrders })
-                if (data?.success) {
-                    setSelectedVehicle(null)
-                    setSelectedVehicleData('')
-                    setOrders([])
-                    setCheckedOrders([])
+                if (selectedVehicleData.capacity >= 0) {
+                    const { data } = await axios.post('/map-orders', { vehicleId: selectedVehicle, orders: checkedOrders, userid: auth.user._id })
+                    if (data?.success) {
+                        alert("Order Shipped Successfully")
+                        getVehicles()
+                        getOrders()
+                        setCheckedOrders([])
+                        setSelectedVehicle(null)
+                        setSelectedVehicleData('')
+                    }
+                } else {
+                    alert("Orders capacity is more than vehicle capacity")
                 }
             } else {
                 alert("Select any order to ship")
             }
         } catch (error) {
             console.log(error)
-
         }
     }
-
     return (
         <div className='container-fluid p-3 dashboard tw-bg-lightGrey'>
             <div className='row'>
@@ -114,8 +116,8 @@ const DeliveryOrderMapping = () => {
                         <div className='d-flex flex-column'>
                             <div className=''>
                                 Select Vehicle Number:
-                                <Select className='tw-min-w-80 mx-2' defaultValue={null} onChange={(e) => setSelectedVehicle(e)}>
-                                    <Option selected>
+                                <Select value={selectedVehicle} className='w-100' onChange={(e) => { setSelectedVehicle(e); setCheckedOrders([]) }}>
+                                    <Option disabled value={null}>
                                         Select any option
                                     </Option>
                                     {vehicles?.map((v, i) => (
@@ -124,10 +126,8 @@ const DeliveryOrderMapping = () => {
                                         </Option>
                                     ))}
                                 </Select>
-
-
                                 <form onSubmit={handleOrderMapping}>
-                                    {selectedVehicle && selectedVehicleData &&
+                                    {selectedVehicle !== null &&
                                         <div>
                                             <div className='row mt-4'>
                                                 <div className='tw-text-md col-12 col-md-4 tw-text-center'>Capacity of Vehicle: {selectedVehicleData.capacity}kg</div>
@@ -135,6 +135,7 @@ const DeliveryOrderMapping = () => {
                                                 <div className='tw-text-md col-12 col-md-4 tw-text-center'>Model Name: {selectedVehicleData.model}</div>
                                             </div>
                                             <div className='mt-4'>
+                                                <h4>Select Orders to ship:</h4>
                                                 {orders && orders.map((o, i) => (
                                                     <div key={i} className="btn-group col-12 col-md-4 mt-2" role="group" aria-label="Basic checkbox toggle button group">
                                                         <input type="checkbox"

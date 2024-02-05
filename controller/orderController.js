@@ -4,10 +4,12 @@ const pdf = require('html-pdf')
 const moment = require('moment')
 const ejs = require('ejs');
 const path = require('path');
-const stripe = require('stripe')('sk_test_51OZSAbSB0wwAWHZh7j03Dz8PIxm8eqfQGaGHVCbnAhTqwpKLV3YP5FEpA4ttyDFmVun8QeT0J3jwmwX0gqvApwW800srmgFa07')
+const stripe = require('stripe')('--add your stripe secret key here--')
 const userModel = require("../Models/userModel");
 const paymentModel = require("../Models/paymentModel")
-const productModel = require("../Models/productModel")
+const productModel = require("../Models/productModel");
+const orderLogModel = require("../Models/orderLogModel");
+const deliveryMappingModel = require("../Models/deliveryMappingModel");
 
 
 const addOrderController = async (req, res) => {
@@ -45,13 +47,15 @@ const addOrderController = async (req, res) => {
 const getBuyerOrders = async (req, res) => {
     try {
         const { buyerid } = req.params
-        const orders = await orderModel.find({ buyer: buyerid }).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
+        const orders = await orderModel.find({ buyer: buyerid }).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").populate({
+            path: 'timeLine.location',
+            model: 'office',
+        }).sort({ createdAt: -1 })
         orders.forEach(async (order) => {
             if (order.refundDetails !== null) {
                 const refund = await stripe.refunds.retrieve(order.refundDetails.refundId)
                 if (refund.destination_details.card.reference != "pending") {
                     const updateorder = await orderModel.findOneAndUpdate({ _id: order._id }, {
-                        status: 'Cancelled',
                         refundDetails: {
                             destination_details: {
                                 card: {
@@ -67,7 +71,12 @@ const getBuyerOrders = async (req, res) => {
                     })
                 }
             }
+            const logs = await orderLogModel.find({ orderId: order._id })
+            const ord = await orderModel.findOneAndUpdate({_id:order._id},{
+                timeLine:logs
+            })
         })
+
         res.json(orders)
     } catch (error) {
         console.log(error);
@@ -211,9 +220,9 @@ const getEmployeeAllOrdersController = async (req, res) => {
 const orderStatusController = async (req, res) => {
     try {
         const { orderId } = req.params
-        const { status } = req.body
+        const { status, userId } = req.body
+        const order = await orderModel.findOne({ _id: orderId })
         if (status === 'Cancelled') {
-            const order = await orderModel.findOne({ _id: orderId })
             if (order.payment === "Payment Done") {
                 const payment = await paymentModel.findOne({ order: order._id })
                 const session = await stripe.checkout.sessions.retrieve(payment.sessionId)
@@ -226,17 +235,18 @@ const orderStatusController = async (req, res) => {
                     paymentStatus: "Refunded"
                 })
                 const refundDetails = await stripe.refunds.retrieve(refund.id)
-                const updateOrder = await orderModel.findOneAndUpdate({ _id: order._id }, {
-                    payment: "Refunded",
-                    refundDetails: {
-                        destination_details: refundDetails.destination_details,
-                        refundId: refund.id
-                    }
-                })
+                order.payment = "Refunded"
+                order.refundDetails = {
+                    destination_details: refundDetails.destination_details,
+                    refundId: refund.id
+                }
+                await order.save()
             }
         }
-        const orders = await orderModel.findByIdAndUpdate(orderId, { status }, { new: true })
-        res.json(orders)
+        const orderLog = await new orderLogModel({ orderId: order._id, order_status: status, user: userId }).save()
+        order.status = status
+        await order.save()
+        res.json(order)
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -249,10 +259,14 @@ const orderStatusController = async (req, res) => {
 const employeeOrderStatusController = async (req, res) => {
     try {
         const { orderId } = req.params
-        const { status } = req.body
-        if (status === "Out for delivery" || status === "Delivered" || status === "Cancelled") {
-            const orders = await orderModel.findByIdAndUpdate(orderId, { status }, { new: true })
-            res.json(orders)
+        const { status, userId } = req.body
+
+        if (status === "Out for delivery" || status === "Delivered") {
+            const order = await orderModel.findOne({ _id: orderId })
+            const orderLog = await new orderLogModel({ orderId: orderId, order_status: status, user: userId, location: order.destinationLocation }).save()
+            order.status = status
+            await order.save()
+            res.json(order)
         } else {
             res.status(200).send({
                 success: false,
@@ -388,7 +402,7 @@ const checkoutController = async (req, res) => {
     }
 }
 const webhookController = async (req, res) => {
-    const endpointSecret = "whsec_aa8c457099f5a8c2dfbc0f443c43702bcae032b40da6fd3872a2b5df10a2861c"
+    const endpointSecret = "--add your webhook endpoint--"
     const sig = req.headers['stripe-signature']
     let data
     let eventType
@@ -434,7 +448,7 @@ const webhookController = async (req, res) => {
 }
 const refundController = async (req, res) => {
     try {
-        const { order } = req.body
+        const { order, userId } = req.body
         const payment = await paymentModel.findOne({ order: order._id })
         const session = await stripe.checkout.sessions.retrieve(payment.sessionId)
         const refund = await stripe.refunds.create({
@@ -447,12 +461,14 @@ const refundController = async (req, res) => {
         })
         const refundDetails = await stripe.refunds.retrieve(refund.id)
         const updateOrder = await orderModel.findOneAndUpdate({ _id: order._id }, {
+            status: 'Cancelled',
             payment: "Refunded",
             refundDetails: {
                 destination_details: refundDetails.destination_details,
                 refundId: refund.id
             }
         })
+        const orderLog = await new orderLogModel({ orderId: order._id, order_status: 'Cancelled', user: userId }).save()
         res.status(200).send({
             success: true,
             message: "Refund initiated sucessfully",
@@ -465,11 +481,8 @@ const refundController = async (req, res) => {
             message: "error while creating refund",
             error
         })
-
     }
-
 }
-
 const orderStatsController = async (req, res) => {
     try {
         const orderStats = await orderModel.aggregate([
@@ -521,14 +534,9 @@ const orderStatsController = async (req, res) => {
 
     }
 }
-
-
-
 const getDeliveryOrdersController = async (req, res) => {
     try {
-
-        const orders = await orderModel.find({ payment:'Payment Done',status:"Not Process" }).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
-        
+        const orders = await orderModel.find({ payment: 'Payment Done', status: "Not Process" }).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
         res.json(orders)
     } catch (error) {
         console.log(error);
@@ -539,7 +547,6 @@ const getDeliveryOrdersController = async (req, res) => {
         })
     }
 }
-
 
 module.exports.addOrderController = addOrderController
 module.exports.getBuyerOrders = getBuyerOrders

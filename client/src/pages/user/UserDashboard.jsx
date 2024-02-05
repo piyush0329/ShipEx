@@ -5,11 +5,11 @@ import moment from 'moment'
 
 const UserDashboard = () => {
     const [name, setName] = useState('')
-    const [roll, setRoll] = useState()
-    const [phone, setPhone] = useState()
-    const [gender, setGender] = useState("")
-    const [dob, setDob] = useState()
-    const [classname, setClassname] = useState()
+    const [roll, setRoll] = useState('')
+    const [phone, setPhone] = useState('')
+    const [gender, setGender] = useState('')
+    const [dob, setDob] = useState('')
+    const [classname, setClassname] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [auth, setAuth] = useAuth()

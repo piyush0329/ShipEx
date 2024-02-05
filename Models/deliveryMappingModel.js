@@ -4,7 +4,7 @@ const deliveryMappingSchema = new mongoose.Schema(
     {
         vehicleId: {
             type: mongoose.ObjectId,
-                ref: 'vehicles'
+            ref: 'vehicles'
         },
         orders: [
             {
@@ -12,6 +12,9 @@ const deliveryMappingSchema = new mongoose.Schema(
                 ref: 'orders'
             }
         ],
+        shipping_status: {
+            type: String
+        },
     },
     {
         timestamps: true

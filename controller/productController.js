@@ -1,8 +1,9 @@
 const officeModel = require("../Models/officeModel")
+const orderLogModel = require("../Models/orderLogModel")
 const orderModel = require("../Models/orderModel")
 const paymentModel = require("../Models/paymentModel")
 const productModel = require("../Models/productModel")
-const stripe = require('stripe')('sk_test_51OZSAbSB0wwAWHZh7j03Dz8PIxm8eqfQGaGHVCbnAhTqwpKLV3YP5FEpA4ttyDFmVun8QeT0J3jwmwX0gqvApwW800srmgFa07')
+const stripe = require('stripe')('--add your stripe secret key--')
 
 
 const getPriceController = async (req, res) => {
@@ -41,7 +42,7 @@ const getPriceController = async (req, res) => {
         let c = 2 * Math.asin(Math.sqrt(a));
         let r = 6371;
         const distance = c * r
-        const price = ((distance * 2) + (weight * 15) + ((shipmentValue * 5) / 100))
+        const price = ((distance * 1.5) + (weight * 5) + ((shipmentValue * 1) / 100))
         res.status(200).send({
             success: true,
             message: "Price calculated successfully",
@@ -132,6 +133,8 @@ const getProductController = async (req, res) => {
                         const payment = await new paymentModel({ order: order._id, buyer: userid, sessionId: session.id, paymentStatus: "Payment Done" }).save()
                         const delproduct = await productModel.deleteMany({ userid: userid })
                         const prod = await productModel.find({ userid }).populate('startLocation', ["officeName", "officeId"]).populate('destinationLocation', ["officeName", "officeId"])
+
+                        const orderLog = await new orderLogModel({orderId:order._id,order_status:order.status,location:order.startLocation,user:order.buyer}).save()
                         res.status(200).send({
                             success: true,
                             message: "Order Done Successfully",

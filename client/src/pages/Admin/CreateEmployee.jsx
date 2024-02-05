@@ -6,16 +6,16 @@ import axios from 'axios'
 const CreateEmployee = () => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
-    const [roll, setRoll] = useState()
-    const [classname, setClassname] = useState()
+    const [roll, setRoll] = useState('')
+    const [classname, setClassname] = useState('')
     const [role, setRole] = useState(2)
-    const [phone, setPhone] = useState()
+    const [phone, setPhone] = useState('')
     const [gender, setGender] = useState('')
-    const [dob, setDob] = useState()
+    const [dob, setDob] = useState('')
     const [aadharNumber, setAadharNumber] = useState('')
     const [dlNumber, setDlNumber] = useState('')
     const [address, setAddress] = useState('')
-    const [password, setPassword] = useState()
+    const [password, setPassword] = useState('')
 
 
     const handleCreateEmployee = async (e) => {
@@ -70,7 +70,7 @@ const CreateEmployee = () => {
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Role</label>
-                                        <input type="number" value={role} onChange={(e) => setRole(e.target.value)} className="form-control" />
+                                        <input type="number" disabled value={role} onChange={(e) => setRole(e.target.value)} className="form-control" />
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Phone</label>

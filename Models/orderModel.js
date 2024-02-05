@@ -25,7 +25,7 @@ const orderSchema = new mongoose.Schema({
     status: {
         type: String,
         default: "Not Process",
-        enum: ["Not Process", "Processing", "Shipped", "Out for delivery", "Delivered", "Cancel"]
+        enum: ["Created","Not Process", "Shipped", "Out for delivery", "Delivered", "Cancelled"]
     },
     totalAmount: {
         type: Number,
@@ -33,7 +33,12 @@ const orderSchema = new mongoose.Schema({
     refundDetails:{
         type:Object,
         default:null
-    }
+    },
+    timeLine:[
+        {
+            
+        }
+    ]
 }, {
     timestamps: true
 })

@@ -3,11 +3,13 @@ import AdminMenu from './AdminMenu'
 import axios from 'axios'
 import moment from 'moment'
 import { Select } from 'antd'
+import { useAuth } from '../../context/auth'
 const { Option } = Select
 
 const AdminOrders = () => {
 
-    const [status] = useState(["Not Process", "Processing", "Shipped", "Out for delivery", "Delivered", "Cancelled"])
+    const [auth] = useAuth()
+    const [status] = useState(["Not Process", "Shipped", "Out for delivery", "Delivered", "Cancelled"])
     const [orders, setOrders] = useState([])
     let [page, setPage] = useState()
     const limit = 5
@@ -39,7 +41,7 @@ const AdminOrders = () => {
 
     const handleChange = async (orderId, value) => {
         try {
-            await axios.put(`/order-status/${orderId}`, { status: value })
+            await axios.put(`/order-status/${orderId}`, { status: value, userId:auth.user._id })
             alert('Status Updated Successfully')
             getOrders(page);
         } catch (error) {
@@ -74,7 +76,7 @@ const AdminOrders = () => {
                                         <tr>
                                             <td>{i + 1}</td>
                                             <td>
-                                                {o.status === "Cancelled" ? "Cancelled" : <Select
+                                                {o.status === "Cancelled" ?"Cancelled" : <Select
                                                     bordered={false}
                                                     onChange={(value) => handleChange(o._id, value)}
                                                     defaultValue={o?.status}

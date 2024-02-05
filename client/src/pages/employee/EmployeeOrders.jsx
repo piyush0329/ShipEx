@@ -4,9 +4,11 @@ import EmployeeMenu from './EmployeeMenu'
 import { Select } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
+import { useAuth } from '../../context/auth'
 const { Option } = Select
 
 const EmployeeOrders = () => {
+    const [auth] = useAuth()
     const [status] = useState(["Out for delivery", "Delivered"])
     const [orders, setOrders] = useState([])
     let [page, setPage] = useState()
@@ -39,7 +41,7 @@ const EmployeeOrders = () => {
 
     const handleChange = async (orderId, value) => {
         try {
-            await axios.put(`/employee-order-status/${orderId}`, { status: value })
+            await axios.put(`/employee-order-status/${orderId}`, { status: value, userId:auth.user._id })
             alert("Status Updated Successfully")
         } catch (error) {
             console.log(error);

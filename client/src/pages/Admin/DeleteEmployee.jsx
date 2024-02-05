@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 
 const DeleteEmployee = () => {
 
-    const [email, setEmail] = useState()
+    const [email, setEmail] = useState('')
 
     const handleDeleteEmployee = async (e) => {
         e.preventDefault()
@@ -12,6 +12,7 @@ const DeleteEmployee = () => {
             const { data,status } = await axios.delete(`/delete-employee/${email}`);
             if (data?.success) {
                 alert("Employee Deleted Successfully");
+                setEmail('')
             } else if(status===200 && !data?.success){
                 alert("Employee doesn't exist or email doesn't belong to valid Employee")
             }  

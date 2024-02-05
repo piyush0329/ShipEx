@@ -68,6 +68,12 @@ const AdminMenu = () => {
           >
            Orders Shipping
           </Link>
+          <Link
+            to="/dashboard/admin/status-log"
+            className="list-group-item list-group-item-action tw-bg-lightpink"
+          >
+           Status Log Update
+          </Link>
           
         </div>
       </div>

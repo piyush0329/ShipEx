@@ -2,18 +2,19 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useCart } from '../context/cart'
 import { useAuth } from '../context/auth'
-
+import { Select } from 'antd'
+const { Option } = Select
 const Services = () => {
 
     const [offices, setOffices] = useState([])
-    const [startLocation, setStartLocation] = useState('')
-    const [destinationLocation, setDestinationLocation] = useState('')
+    const [startLocation, setStartLocation] = useState(null)
+    const [destinationLocation, setDestinationLocation] = useState(null)
     const [weight, setWeight] = useState('')
     const [description, setDescription] = useState('')
     const [shipmentValue, setShipmentValue] = useState('')
     const [price, setPrice] = useState('')
-    const [cart,setCart]= useCart()
-    const [auth]=useAuth()
+    const [cart, setCart] = useCart()
+    const [auth] = useAuth()
     // const {data} = useLoaderData()
     // const offices = data?.offices
     // console.log(data)
@@ -39,47 +40,47 @@ const Services = () => {
 
     const calculatePrice = async (e) => {
         e.preventDefault()
-        try {           
-            if(!startLocation || !destinationLocation || !weight || !shipmentValue){
+        try {
+            if (!startLocation || !destinationLocation || !weight || !shipmentValue) {
                 alert('all fields required')
-            }else{
-                const {data} =await axios.post('/get-price',{startLocation, destinationLocation, weight, shipmentValue})
+            } else {
+                const { data } = await axios.post('/get-price', { startLocation, destinationLocation, weight, shipmentValue })
                 if (data?.success) {
                     setPrice(data?.price.toFixed(2))
                 } else {
                     alert("error in calculating Price")
                 }
-            }   
+            }
         } catch (error) {
-            console.log(error)    
+            console.log(error)
         }
     }
     const handleAddToPayment = async (e) => {
         e.preventDefault()
         try {
-               if(price){
-                const {data,status}= await axios.post(`/add-product`,{startLocation,destinationLocation,weight,description,shipmentValue,price,userid:auth.user._id})
-                if (status===200 && data?.success) {
-                    setCart([...cart,data.updatedProduct])
+            if (price) {
+                const { data, status } = await axios.post(`/add-product`, { startLocation, destinationLocation, weight, description, shipmentValue, price, userid: auth.user._id })
+                if (status === 200 && data?.success) {
+                    setCart([...cart, data.updatedProduct])
                     setStartLocation('')
                     setDestinationLocation('')
-                    setWeight(0)
+                    setWeight('')
                     setDescription('')
                     setShipmentValue('')
                     setPrice('')
-                
+
                     alert('product added to cart')
-                } else if(status===200 && (!data?.success)) {
+                } else if (status === 200 && (!data?.success)) {
                     alert("Already one product present in cart make payment for it first then add other or remove it")
                 }
-                 else{
+                else {
                     alert("error in adding Product")
                 }
-               }else{
+            } else {
                 alert('you have to calculate the price first')
-               }
+            }
         } catch (error) {
-            console.log(error)    
+            console.log(error)
         }
     }
     return (
@@ -134,25 +135,33 @@ const Services = () => {
                             <form className='text-start'>
                                 <div className="mb-3">
                                     <label className="form-label">Start Location *</label>
-                                    <select onChange={(e) => setStartLocation(e.target.value)} className="form-select" aria-label="Default select example">
-                                        <option selected>Select Start Location</option>
-                                        {
-                                            offices?.map((o) => (
-                                                <option key={o._id} value={o._id}>{o.officeName}</option>
-                                            ))
-                                        }
-                                    </select>
+
+                                    <Select value={startLocation} className='w-100' onChange={(e) => { setStartLocation(e) }}>
+                                        <Option disabled value={null}>
+                                            Select any option
+                                        </Option>
+                                        {offices?.map((o, i) => (
+                                            <Option key={i} value={o._id}>
+                                                {o.officeName}
+                                            </Option>
+                                        ))}
+                                    </Select>
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label">Destination Location *</label>
-                                    <select onChange={(e) => setDestinationLocation(e.target.value)} className="form-select" aria-label="Default select example">
-                                        <option selected>Select Destination Location</option>
+
+                                    <Select value={startLocation} className='w-100' onChange={(e) => { setDestinationLocation(e) }}>
+                                        <Option disabled value={null}>
+                                            Select any option
+                                        </Option>
                                         {
-                                            offices?.map((o) => (
-                                                <option key={o._id} value={o._id}>{o.officeName}</option>
+                                            offices?.map((o, i) => (
+                                                <Option key={i} value={o._id}>
+                                                    {o.officeName}
+                                                </Option>
                                             ))
                                         }
-                                    </select>
+                                    </Select>
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label">weight(kg) *</label>

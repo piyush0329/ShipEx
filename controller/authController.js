@@ -60,7 +60,6 @@ const registerController = async (req, res) => {
 
     }
 }
-
 const loginController = async (req, res) => {
     try {
         const { email, password } = req.body
@@ -143,7 +142,6 @@ const loginController = async (req, res) => {
         })
     }
 }
-
 const updateProfileController = async (req, res) => {
     try {
         const { name, roll, classname, password, gender, phone, dob } = req.body
@@ -176,7 +174,6 @@ const updateProfileController = async (req, res) => {
         })
     }
 }
-
 const loadUserController = async (req, res) => {
     try {
         const { email } = req.params
@@ -203,7 +200,6 @@ const loadUserController = async (req, res) => {
         })
     }
 }
-
 const userUpdateController = async (req, res) => {
     try {
         const { email, name, roll, classname, password, role, gender, phone, dob } = req.body
@@ -239,7 +235,6 @@ const userUpdateController = async (req, res) => {
     }
 
 }
-
 const loadEmployeeController = async (req, res) => {
     try {
         const { email } = req.params
@@ -267,7 +262,6 @@ const loadEmployeeController = async (req, res) => {
         })
     }
 }
-
 const employeeUpdateController = async (req, res) => {
 
     try {
@@ -313,7 +307,6 @@ const employeeUpdateController = async (req, res) => {
         })
     }
 }
-
 const ControllerUser = async (req, res) => {
     try {
         const { name, roll, classname, password, phone, gender, dob } = req.body

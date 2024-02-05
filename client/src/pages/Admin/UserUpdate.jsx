@@ -7,13 +7,13 @@ const UserUpdate = () => {
 
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
-    const [roll, setRoll] = useState()
-    const [classname, setClassname] = useState()
-    const [role, setRole] = useState()
+    const [roll, setRoll] = useState('')
+    const [classname, setClassname] = useState('')
+    const [role, setRole] = useState('')
     const [gender, setGender] = useState('')
-    const [phone, setPhone] = useState()
-    const [dob, setDob] = useState()
-    const [password, setPassword] = useState()
+    const [phone, setPhone] = useState('')
+    const [dob, setDob] = useState('')
+    const [password, setPassword] = useState('')
     const [selectedOption, setSelectedOption] = useState('update')
 
     const fetchUser = async (e) => {
@@ -49,6 +49,15 @@ const UserUpdate = () => {
                 alert("error while updating user")
             }
             else {
+                    setEmail('')
+                    setName('')
+                    setRoll('')
+                    setClassname('')
+                    setRole('')
+                    setPhone('')
+                    setGender('')
+                    setDob('')
+                    setPassword('')
                 alert("User Updated Successfully")
             }
         } catch (error) {
@@ -160,7 +169,6 @@ const UserUpdate = () => {
                                                 </div>
                                             </form>
                                         </>
-
                                 }
                             </div>
                         </div >

@@ -6,11 +6,11 @@ import moment from 'moment'
 
 const UpdateDetails = () => {
     const [name, setName] = useState('')
-    const [roll, setRoll] = useState()
-    const [classname, setClassname] = useState()
-    const [phone, setPhone] = useState()
+    const [roll, setRoll] = useState('')
+    const [classname, setClassname] = useState('')
+    const [phone, setPhone] = useState('')
     const [gender, setGender] = useState('')
-    const [dob, setDob] = useState()
+    const [dob, setDob] = useState('')
     const [email, setEmail] = useState('')
     const [aadharNumber, setAadharNumber] = useState('')
     const [dlNumber, setDlNumber] = useState('')
