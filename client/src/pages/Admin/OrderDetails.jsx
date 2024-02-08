@@ -79,10 +79,10 @@ const OrderDetails = () => {
     return (
         <div className='container-fluid tw-bg-lightGrey'>
             <div className="row">
-                <div className="col col-md-3">
+                <div className="col col-md-2">
                     <AdminMenu />
                 </div>
-                <div className="col col-md-9">
+                <div className="col col-md-10">
                     <div className=''>
                         <h1 className='text-center'>Order Details</h1>
                         <div className='border shadow table-responsive-sm table-responsive-md tw-table-auto tw-rounded-xl tw-bg-white'>

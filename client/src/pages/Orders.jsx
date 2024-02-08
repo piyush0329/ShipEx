@@ -7,16 +7,18 @@ const Orders = () => {
 
   const [orders, setOrders] = useState([])
   const [auth] = useAuth()
+  const [loading, setLoading] = useState(true)
+
   const getOrders = async () => {
     try {
       const buyerid = auth?.user._id
       const { data } = await axios.get(`/get-orders/${buyerid}`)
-      setTimeout(() => {
-        setOrders(data)
-      }, 400);
-
+      setOrders(data?.updatedOrders)
     } catch (error) {
       console.log(error);
+    }
+    finally {
+      setLoading(false)
     }
   }
   useEffect(() => {
@@ -52,6 +54,7 @@ const Orders = () => {
   }
 
   return (
+    !loading &&
     <div>
       <div className="container-fluid p-3 tw-bg-lightGrey">
         <div className="row">
@@ -106,7 +109,9 @@ const Orders = () => {
                         </tr>
                       </tbody>
                     </table>
+
                     <div className="container-fluid">
+
                       {o?.products?.map((p, i) => (
                         <div className="row px-3 flex-row" key={i}>
                           <div className="">
@@ -116,6 +121,7 @@ const Orders = () => {
                             <p><strong>Start Location:</strong> {o.startLocation.officeName}</p>
                             <p><strong>Destination Location:</strong> {o.destinationLocation.officeName}</p>
                             <p><strong>Shipping Charge:</strong> ₹{p.price}</p>
+                            {o.expectedDelivery != null ? <p>Expected Delivery {moment(o?.expectedDelivery).format("DD-MM-YYYY")}</p> : ""}
                           </div>
                           <div className=''>
                             <div className="row">

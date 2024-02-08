@@ -1,12 +1,15 @@
 const express = require('express')
 const connectDB = require('./db')
 const cors = require('cors')
+const compression = require('compression')
+const morgan = require('morgan')
 const { authRouter } = require('./Router/authRoutes')
 const { officeRouter } = require('./Router/officeRoutes')
 const { productRouter } = require('./Router/productRoutes')
 const { orderRouter } = require('./Router/orderRoutes')
 const { webhookController } = require('./controller/orderController')
 const { deliveryRouter } = require('./Router/deliveryRoutes')
+require('dotenv').config()
 
 const app = express()
 connectDB()
@@ -18,6 +21,8 @@ app.use(cors({
 
 app.post('/webhook', express.raw({ type: 'application/json' }), webhookController);
 app.use(express.json())
+app.use(compression())
+app.use(morgan('dev'))
 app.use(authRouter)
 app.use(officeRouter)
 app.use(productRouter)
@@ -32,6 +37,6 @@ app.get("/", (req, res) => {
 // })
 
 
-app.listen(8000, (req, res) => {
+app.listen(process.env.PORT, (req, res) => {
     console.log("server is running")
 })

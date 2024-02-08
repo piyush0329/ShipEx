@@ -47,7 +47,7 @@ const StatusLog = () => {
     useEffect(() => {
         getVehicleOrder()
 
-    }, [selectedVehicle])
+    }, [selectedVehicle,vehicles])
     useEffect(() => {
         getVehicles()
         // eslint-disable-next-line 
@@ -60,6 +60,7 @@ const StatusLog = () => {
                 const {data}= await axios.post('/order-log',{location:selectedOffice, orders,user:auth.user._id })
                 if(data?.success){
                     alert(data?.message)
+                    getVehicles()
                 }
             }else{
                 alert('Select Location to create log')
@@ -74,11 +75,11 @@ const StatusLog = () => {
         <>
             <div className="container-fluid p-3 dashboard tw-bg-lightGrey">
                 <div className="row">
-                    <div className="col-12 col-md-3">
+                    <div className="col-12 col-md-2">
                         <AdminMenu />
                     </div>
 
-                    <div className="col-12 col-md-9">
+                    <div className="col-12 col-md-10">
                         <div className="card p-3 tw-bg-light">
                             <h4>Select Vehicle:</h4>
                             <Select value={selectedVehicle} className='tw-min-w-80' onChange={(e) => { setSelectedVehicle(e); }}>

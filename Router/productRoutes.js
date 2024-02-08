@@ -5,8 +5,8 @@ const { getPriceController, addProductController, getProductController, deleteSi
 const productRouter = express.Router()
 
 
-//api to get the shipping cost of a product
-productRouter.post('/get-price', requireSignIn, getPriceController)
+// //api to get the shipping cost of a product
+// productRouter.post('/get-price', requireSignIn, getPriceController)
 //api to add the product to cart 
 productRouter.post('/add-product', requireSignIn, addProductController)
 // api to get the product from database based on the loggedin user used to load cart 

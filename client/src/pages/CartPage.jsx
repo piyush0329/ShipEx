@@ -3,9 +3,6 @@ import { useAuth } from '../context/auth'
 import { useCart } from '../context/cart'
 import axios from 'axios'
 
-// const stripe = loadStripe('pk_test_51OZSAbSB0wwAWHZhkKJ4oSHReKqmsEWSGt8ZBxaYrpvIagkJyZobN1eMoKBmaH1Dx4XpGNhKUpuj7DVeFtSh0Ipz00ZrokEkuH')
-
-
 const CartPage = () => {
 
   const [auth] = useAuth()
@@ -73,19 +70,19 @@ const CartPage = () => {
         </div>
       </div>
       <div className="container">
-        <div className="row">
-          <div className="col-md-7 p-0 m-0">
+        <div className="row d-flex flex-row justify-content-between">
+          <div className="col-md-6 p-0 m-0">
             {cart?.map((p) => (
-              <div key={p._id} className="card d-flex flex-row justify-content-between" >
+              <div key={p._id} className="card tw-bg-light d-flex flex-row justify-content-between" >
                 <div className="p-4">
                   <h6>Description: {p.description}</h6>
                   <h6>Start Location: {p.startLocation.officeName}</h6>
                   <h6>Destination Location: {p.destinationLocation.officeName}</h6>
-                  <h6>Weight: {p.weight}</h6>
-                  <h6>Shipment Value: {p.shipmentValue}</h6>
-                  <h6>Price to pay: {p.price.toFixed(2)}</h6>
+                  <h6>Weight: {p.weight}kg</h6>
+                  <h6>Shipment Value: ₹ {p.shipmentValue}</h6>
+                  <h6>Shipping Charge: ₹ {p.price.toFixed(2)}</h6>
                 </div>
-                <div className="text-center">
+                <div className="text-center p-4">
                   <button className="tw-btn tw-btn-outline tw-bg-red text-white" onClick={() => removeCartItem(p._id)} >Remove</button>
                 </div>
               </div>
@@ -93,13 +90,13 @@ const CartPage = () => {
           </div>
           {
             cart?.length ? <div className='col-md-5 mt-2 text-center'>
-            <h2>Cart Summary</h2>
-            <h5>Total | Checkout | Payment</h5>
-            <h4>Total : {totalPrice()} </h4>
-            <br />
-            <br />
-            {cart.length !== 0 ? <button onClick={handleMakePayment} className='tw-btn tw-btn-outline'>Make Payment</button> : ""}
-          </div>:""
+              <h2>Cart Summary</h2>
+              <h5>Total | Checkout | Payment</h5>
+              <h4>Total : {totalPrice()} </h4>
+              <br />
+              <br />
+              {cart.length !== 0 ? <button onClick={handleMakePayment} className='tw-btn tw-btn-outline'>Make Payment</button> : ""}
+            </div> : ""
           }
         </div>
       </div>

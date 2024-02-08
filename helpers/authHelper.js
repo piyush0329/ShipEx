@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt')
-
+require('dotenv').config()
  const hashPassword = async(password)=>{
     try{
-        const saltRounds = 10
+        const saltRounds =process.env.SALT_ROUNDS
         const hashedPassword = await bcrypt.hash(password,saltRounds)
         return hashedPassword
     }catch(error){

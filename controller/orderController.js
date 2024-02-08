@@ -1,10 +1,11 @@
 const orderModel = require("../Models/orderModel")
 const ExcelJs = require('exceljs')
+require('dotenv').config()
 const pdf = require('html-pdf')
 const moment = require('moment')
 const ejs = require('ejs');
 const path = require('path');
-const stripe = require('stripe')('--add your stripe secret key here--')
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const userModel = require("../Models/userModel");
 const paymentModel = require("../Models/paymentModel")
 const productModel = require("../Models/productModel");
@@ -72,12 +73,26 @@ const getBuyerOrders = async (req, res) => {
                 }
             }
             const logs = await orderLogModel.find({ orderId: order._id })
-            const ord = await orderModel.findOneAndUpdate({_id:order._id},{
-                timeLine:logs
-            })
-        })
+            const expectedDel = await deliveryMappingModel.findOne({ orders: order._id })
 
-        res.json(orders)
+            const ord = await orderModel.findOneAndUpdate({ _id: order._id }, {
+                timeLine: logs,
+                expectedDelivery: expectedDel?.arrival_time,
+            })
+
+        })
+        const updatedOrders = await orderModel.find({ buyer: buyerid }).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").populate({
+            path: 'timeLine.location',
+            model: 'office',
+        }).sort({ createdAt: -1 })
+
+        res.status(200).send({
+            success: true,
+            message: 'Order Fetched Successfully',
+            updatedOrders,
+
+
+        })
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -201,8 +216,8 @@ const getExcelSheetController = async (req, res) => {
 const getEmployeeAllOrdersController = async (req, res) => {
     try {
         const { page, limit } = req.query
-        const orders = await orderModel.find({}).skip((page - 1) * limit).limit(limit).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
-        const orderlength = (await orderModel.find({}).populate("buyer", "name").sort({ createdAt: -1 })).length
+        const orders = await orderModel.find({$or: [{ status: "Shipped" },{ status: "Out for delivery" },{ status: "Delivered" }]}).skip((page - 1) * limit).limit(limit).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
+        const orderlength = (await orderModel.find({$or: [{ status: "Shipped" },{ status: "Out for delivery" },{ status: "Delivered" }]}).populate("buyer", "name").sort({ createdAt: -1 })).length
         res.status(200).send({
             success: true,
             orders,
@@ -402,7 +417,7 @@ const checkoutController = async (req, res) => {
     }
 }
 const webhookController = async (req, res) => {
-    const endpointSecret = "--add your webhook endpoint--"
+    const endpointSecret = process.env.STRIPE_WEBHOOK_END_POINT_SECRET_KEY
     const sig = req.headers['stripe-signature']
     let data
     let eventType
@@ -462,6 +477,7 @@ const refundController = async (req, res) => {
         const refundDetails = await stripe.refunds.retrieve(refund.id)
         const updateOrder = await orderModel.findOneAndUpdate({ _id: order._id }, {
             status: 'Cancelled',
+            expectedDelivery:null,
             payment: "Refunded",
             refundDetails: {
                 destination_details: refundDetails.destination_details,

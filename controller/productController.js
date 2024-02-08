@@ -3,13 +3,63 @@ const orderLogModel = require("../Models/orderLogModel")
 const orderModel = require("../Models/orderModel")
 const paymentModel = require("../Models/paymentModel")
 const productModel = require("../Models/productModel")
-const stripe = require('stripe')('--add your stripe secret key--')
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 
-const getPriceController = async (req, res) => {
+// const getPriceController = async (req, res) => {
 
+//     try {
+//         const { startLocation, destinationLocation, weight, shipmentValue } = req.body
+//         if (!startLocation) {
+//             return res.send({ message: "Start Location is required" })
+//         }
+//         if (!destinationLocation) {
+//             return res.send({ message: "Destination Location is required" })
+//         }
+//         if (!weight) {
+//             return res.send({ message: "Weight is required" })
+//         }
+//         if (!shipmentValue) {
+//             return res.send({ message: "Shipment value is required" })
+//         }
+//         const startOffice = await officeModel.findOne({ _id: startLocation })
+//         const destinationOffice = await officeModel.findOne({ _id: destinationLocation })
+
+//         let lon1 = startOffice.longitude
+//         let lat1 = startOffice.latitude
+//         let lon2 = destinationOffice.longitude
+//         let lat2 = destinationOffice.latitude
+
+//         lon1 = lon1 * Math.PI / 180;
+//         lon2 = lon2 * Math.PI / 180;
+//         lat1 = lat1 * Math.PI / 180;
+//         lat2 = lat2 * Math.PI / 180;
+//         let dlon = lon2 - lon1;
+//         let dlat = lat2 - lat1;
+//         let a = Math.pow(Math.sin(dlat / 2), 2)
+//             + Math.cos(lat1) * Math.cos(lat2)
+//             * Math.pow(Math.sin(dlon / 2), 2);
+//         let c = 2 * Math.asin(Math.sqrt(a));
+//         let r = 6371;
+//         const distance = c * r
+//         const price = ((distance * 1.5) + (weight * 5) + ((shipmentValue * 1) / 100))
+//         res.status(200).send({
+//             success: true,
+//             message: "Price calculated successfully",
+//             price
+//         })
+//     } catch (error) {
+//         console.log(error)
+//         res.status(400).send({
+//             success: false,
+//             message: "Unable to calculate Price"
+//         })
+//     }
+// }
+
+const addProductController = async (req, res) => {
     try {
-        const { startLocation, destinationLocation, weight, shipmentValue } = req.body
+        const { startLocation, destinationLocation, weight, description, shipmentValue, userid } = req.body
         if (!startLocation) {
             return res.send({ message: "Start Location is required" })
         }
@@ -21,6 +71,13 @@ const getPriceController = async (req, res) => {
         }
         if (!shipmentValue) {
             return res.send({ message: "Shipment value is required" })
+        }
+        
+        if (!description) {
+            return res.send({ message: "Description is required" })
+        }
+        if (!userid) {
+            return res.send({ message: "User Id is required" })
         }
         const startOffice = await officeModel.findOne({ _id: startLocation })
         const destinationOffice = await officeModel.findOne({ _id: destinationLocation })
@@ -43,44 +100,6 @@ const getPriceController = async (req, res) => {
         let r = 6371;
         const distance = c * r
         const price = ((distance * 1.5) + (weight * 5) + ((shipmentValue * 1) / 100))
-        res.status(200).send({
-            success: true,
-            message: "Price calculated successfully",
-            price
-        })
-    } catch (error) {
-        console.log(error)
-        res.status(400).send({
-            success: false,
-            message: "Unable to calculate Price"
-        })
-    }
-}
-
-const addProductController = async (req, res) => {
-    try {
-        const { startLocation, destinationLocation, weight, description, shipmentValue, price, userid } = req.body
-        if (!startLocation) {
-            return res.send({ message: "Start Location is required" })
-        }
-        if (!destinationLocation) {
-            return res.send({ message: "Destination Location is required" })
-        }
-        if (!weight) {
-            return res.send({ message: "Weight is required" })
-        }
-        if (!shipmentValue) {
-            return res.send({ message: "Shipment value is required" })
-        }
-        if (!price) {
-            return res.send({ message: "Price is required" })
-        }
-        if (!description) {
-            return res.send({ message: "Description is required" })
-        }
-        if (!userid) {
-            return res.send({ message: "User Id is required" })
-        }
         const existinguser = await productModel.findOne({ userid: userid })
         if (!existinguser) {
             const product = await new productModel({ startLocation, destinationLocation, weight, description, shipmentValue, price, userid }).save()
@@ -219,7 +238,7 @@ const deleteProductsController = async (req, res) => {
 }
 
 
-module.exports.getPriceController = getPriceController
+// module.exports.getPriceController = getPriceController
 module.exports.addProductController = addProductController
 module.exports.getProductController = getProductController
 module.exports.deleteSingleProductController = deleteSingleProductController

@@ -59,10 +59,10 @@ const UpdateDetails = () => {
     return (
         <div className='container-fluid p-3 tw-bg-lightGrey'>
             <div className='row'>
-                <div className="col-12 col-md-3">
+                <div className="col-12 col-md-2">
                     <EmployeeMenu />
                 </div>
-                <div className="col-12 col-md-9">
+                <div className="col-12 col-md-10">
                     <div className='card p-3 tw-bg-light'>
                         <div className="mt-3">
                             <h2 className='text-center'>Update Employee Profile</h2>

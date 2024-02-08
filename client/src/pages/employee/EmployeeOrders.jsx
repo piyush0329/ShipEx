@@ -52,10 +52,10 @@ const EmployeeOrders = () => {
         <div className='container-fluid p-3 tw-bg-lightGrey'>
 
             <div className='row'>
-                <div className="col col-md-3">
+                <div className="col col-md-2">
                     <EmployeeMenu />
                 </div>
-                <div className='col-md-9'>
+                <div className='col-md-10'>
                     <h1 className='text-center'>All Orders</h1>
                     {orders?.map((o, i) => {
                         return (
@@ -76,7 +76,7 @@ const EmployeeOrders = () => {
                                         <tr>
                                             <td>{i + 1}</td>
                                             <td>
-                                            {o.status==="Cancelled"?"Cancelled":<Select
+                                            {o.status==="Delivered"?"Delivered":<Select
                                                     bordered={false}
                                                     onChange={(value) => handleChange(o._id, value)}
                                                     defaultValue={o?.status}

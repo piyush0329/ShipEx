@@ -21,6 +21,12 @@ const vehicleSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    status: {
+        type: String,
+        required: true,
+        trim: true,
+        default:"Free"
+    },
 }, {
     timestamps: true
 })

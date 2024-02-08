@@ -8,10 +8,10 @@ import IndexPage from "../pages/IndexPage"
 export default function AdminRoute() {
     const [ok, setOk] = useState(false)
     const [auth] = useAuth()
+    const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        const authCheck = async () => {
-            try {
+    const authCheck = async () => {
+        try {
             const res = await axios.get("/admin-auth")
             if (res.data.ok) {
                 setOk(true)
@@ -19,12 +19,18 @@ export default function AdminRoute() {
                 setOk(false)
             }
         } catch (error) {
-                console.log(error)
-                setOk(false)
+            console.log(error)
+            setOk(false)
         }
+        finally {
+            setLoading(false)
         }
+    }
+    useEffect(() => {
+
         if (auth?.token) authCheck()
+
     }, [auth?.token])
 
-    return ok ? <Outlet /> : <IndexPage />
+    return !loading ? ok ? <Outlet /> : <IndexPage /> : ''
 }

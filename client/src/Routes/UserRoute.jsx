@@ -7,6 +7,7 @@ import IndexPage from "../pages/IndexPage"
 export default function UserRoute() {
   const [ok, setOk] = useState(false)
   const [auth] = useAuth()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const authCheck = async () => {
@@ -21,10 +22,13 @@ export default function UserRoute() {
         console.log(error);
         setOk(false);
       }
+      finally {
+        setLoading(false)
+      }
     }
     if (auth?.token) authCheck()
   }, [auth?.token])
 
-  return ok ? <Outlet /> : <IndexPage />
+  return !loading ? ok ? <Outlet /> : <IndexPage /> : ""
 
 }

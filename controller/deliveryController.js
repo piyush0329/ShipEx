@@ -33,17 +33,18 @@ const createVehicleController = async (req, res) => {
 }
 const getVehiclesController = async (req, res) => {
     try {
-        const vehicles = await vehicleModel.find({});
+        const vehicles = await vehicleModel.find({ status: "Free" });
 
-        const deliveryMapping = await deliveryMappingModel.find()
+        // const deliveryMapping = await deliveryMappingModel.find()
 
-        const deliveryMappingIds = deliveryMapping.map(mapping => mapping.vehicleId.toString());
-        const filteredVehicles = vehicles.filter(vehicle => !deliveryMappingIds.includes(vehicle._id.toString()));
+        // const deliveryMappingIds = deliveryMapping.map(mapping => mapping.vehicleId.toString());
+        // const filteredVehicles = vehicles.filter(vehicle => !deliveryMappingIds.includes(vehicle._id.toString()));
+
 
         res.status(200).send({
             success: true,
             message: "Vehicles Fetched Successfully",
-            vehicles: filteredVehicles
+            vehicles
         });
     } catch (error) {
         console.log(error)
@@ -56,7 +57,7 @@ const getVehiclesController = async (req, res) => {
 }
 const getOrderVehiclesController = async (req, res) => {
     try {
-        const vehicles = await vehicleModel.find({});
+        const vehicles = await vehicleModel.find({ status: "Working" });
 
 
 
@@ -107,16 +108,45 @@ const orderMappingController = async (req, res) => {
                 message: "Orders are required"
             })
         }
+        const order_details = await orderModel.findOne({ _id: orders[0] }).populate('startLocation', ['longitude', 'latitude']).populate('destinationLocation', ['longitude', 'latitude'])
+        let lon1 = order_details.startLocation.longitude
+        let lat1 = order_details.startLocation.latitude
+        let lon2 = order_details.destinationLocation.longitude
+        let lat2 = order_details.destinationLocation.latitude
+
+        lon1 = lon1 * Math.PI / 180;
+        lon2 = lon2 * Math.PI / 180;
+        lat1 = lat1 * Math.PI / 180;
+        lat2 = lat2 * Math.PI / 180;
+        let dlon = lon2 - lon1;
+        let dlat = lat2 - lat1;
+        let a = Math.pow(Math.sin(dlat / 2), 2)
+            + Math.cos(lat1) * Math.cos(lat2)
+            * Math.pow(Math.sin(dlon / 2), 2);
+        let c = 2 * Math.asin(Math.sqrt(a));
+        let r = 6371;
+        const distance = c * r
+        const speed = 20
+        const time = distance / speed
+        const packingTime = 24
+        const deliveryTime = 24
+        const date = new Date()
+        const updatedDate = new Date(date.getTime() + (time + packingTime + deliveryTime) * 3600 * 1000)
+
         orders.forEach(async (order) => {
             const order_details = await orderModel.findOne({ _id: order })
             const updateStatus = await orderModel.findOneAndUpdate({ _id: order }, { status: "Shipped" })
             const orderLog = await new orderLogModel({ orderId: order, order_status: "Shipped", user: userid, location: order_details.startLocation }).save()
+
         })
-        const mappedOrders = await new deliveryMappingModel({ vehicleId, orders }).save()
+        const mappedOrders = await new deliveryMappingModel({ vehicleId, orders, arrival_time: updatedDate, departure_time: date }).save()
+        const vehicle = await vehicleModel.findOneAndUpdate({ _id: vehicleId }, { status: "Working" }, { new: true })
+        console.log(vehicle)
         res.status(201).send({
             success: true,
             message: "Orders Mapped Successfully",
-            mappedOrders
+            vehicle
+            //mappedOrders
         })
     } catch (error) {
         console.log(error)
@@ -159,10 +189,14 @@ const orderLogsController = async (req, res) => {
     try {
         const { location, orders, user } = req.body
 
-        orders.forEach(async (order) => {
-            if (order.destinationLocation._id === location) {
-                const mappingDelivery = await deliveryMappingModel.findOneAndDelete({ 'orders': order._id })
-            }
+        if (orders[0].destinationLocation._id === location) {
+            const order = await deliveryMappingModel.findOne({ orders: orders[0]._id })
+            const vehicle = await vehicleModel.findOneAndUpdate({ _id: order.vehicleId }, {
+                status: "Free"
+            })
+            const mappingDelivery = await deliveryMappingModel.findOneAndDelete({ 'orders': orders[0]._id })
+        }
+        orders.forEach(async (order) => {   
             const orderLogs = await new orderLogModel({ orderId: order._id, location: location, order_status: order.status, user: user }).save()
         })
 

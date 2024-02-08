@@ -32,7 +32,7 @@ import DeliveryOrderMapping from './pages/Admin/DeliveryOrderMapping';
 import StatusLog from './pages/Admin/StatusLog';
 
 
-axios.defaults.baseURL = 'http://localhost:8000'
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL
 
 
 function App() {

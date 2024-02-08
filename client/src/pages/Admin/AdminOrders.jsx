@@ -52,10 +52,10 @@ const AdminOrders = () => {
     return (
         <div className='container-fluid p-3 tw-bg-lightGrey'>
             <div className='row'>
-                <div className="col col-md-3">
+                <div className="col col-md-2">
                     <AdminMenu />
                 </div>
-                <div className='col-md-9'>
+                <div className='col-md-10'>
                     <h1 className='text-center'>All Orders</h1>
                     {orders?.map((o, i) => {
                         return (

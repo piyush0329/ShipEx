@@ -34,6 +34,10 @@ const orderSchema = new mongoose.Schema({
         type:Object,
         default:null
     },
+    expectedDelivery:{
+        type:Date,
+        default:null
+    },
     timeLine:[
         {
             

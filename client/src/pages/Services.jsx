@@ -12,7 +12,7 @@ const Services = () => {
     const [weight, setWeight] = useState('')
     const [description, setDescription] = useState('')
     const [shipmentValue, setShipmentValue] = useState('')
-    const [price, setPrice] = useState('')
+    //const [price, setPrice] = useState('')
     const [cart, setCart] = useCart()
     const [auth] = useAuth()
     // const {data} = useLoaderData()
@@ -38,28 +38,28 @@ const Services = () => {
         // eslint-disable-next-line
     }, [])
 
-    const calculatePrice = async (e) => {
-        e.preventDefault()
-        try {
-            if (!startLocation || !destinationLocation || !weight || !shipmentValue) {
-                alert('all fields required')
-            } else {
-                const { data } = await axios.post('/get-price', { startLocation, destinationLocation, weight, shipmentValue })
-                if (data?.success) {
-                    setPrice(data?.price.toFixed(2))
-                } else {
-                    alert("error in calculating Price")
-                }
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    // const calculatePrice = async (e) => {
+    //     e.preventDefault()
+    //     try {
+    //         if (!startLocation || !destinationLocation || !weight || !shipmentValue) {
+    //             alert('all fields required')
+    //         } else {
+    //             const { data } = await axios.post('/get-price', { startLocation, destinationLocation, weight, shipmentValue })
+    //             if (data?.success) {
+    //                 setPrice(data?.price.toFixed(2))
+    //             } else {
+    //                 alert("error in calculating Price")
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
     const handleAddToPayment = async (e) => {
         e.preventDefault()
         try {
-            if (price) {
-                const { data, status } = await axios.post(`/add-product`, { startLocation, destinationLocation, weight, description, shipmentValue, price, userid: auth.user._id })
+            
+                const { data, status } = await axios.post(`/add-product`, { startLocation, destinationLocation, weight, description, shipmentValue, userid: auth.user._id })
                 if (status === 200 && data?.success) {
                     setCart([...cart, data.updatedProduct])
                     setStartLocation('')
@@ -67,7 +67,7 @@ const Services = () => {
                     setWeight('')
                     setDescription('')
                     setShipmentValue('')
-                    setPrice('')
+                    // setPrice('')
 
                     alert('product added to cart')
                 } else if (status === 200 && (!data?.success)) {
@@ -76,9 +76,7 @@ const Services = () => {
                 else {
                     alert("error in adding Product")
                 }
-            } else {
-                alert('you have to calculate the price first')
-            }
+           
         } catch (error) {
             console.log(error)
         }
@@ -99,7 +97,7 @@ const Services = () => {
             <div className="container col-lg-12 pb-sm-4 pb-lg-0 pe-lg-5">
                 The Express Parcels Vertical offers a wide range of domestic products and services catering to C2C and B2B customers for documents and parcels of all sizes including part-truck-load shipments. Our product offerings range from time-sensitive express services to cost-effective ground express solutions. Our extensive delivery network currently reaches 96% of India’s population, making it easy for you to send documents and parcels of any size to almost anywhere in India.
             </div>
-            <div className="row pt-3 ">
+            <div className="row pt-3 container">
                 <div className="col-sm-8 col-md-6 col-lg-6  position-relative mb-lg-0">
                     <img src="https://www.dtdc.in/img/icons/express-parcels.jpg" alt="express-services" className="img-fluid abox-shadow-1 rounded" />
                 </div>
@@ -129,12 +127,12 @@ const Services = () => {
                 <div className="card-body text-center">
                     <div className='row'>
                         <div className="col-12 col-sm-5">
-                            <img className='rounded img-fluid' src='https://images.unsplash.com/photo-1612630741022-b29ec17d013d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y291cmllcnxlbnwwfHwwfHx8MA%3D%3D' alt='...' />
+                            <img className='rounded tw-max-h-96' src='https://images.unsplash.com/photo-1612630741022-b29ec17d013d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y291cmllcnxlbnwwfHwwfHx8MA%3D%3D' alt='...' />
                         </div>
                         <div className="col-12 col-sm-7 mt-2">
                             <form className='text-start'>
                                 <div className="mb-3">
-                                    <label className="form-label">Start Location *</label>
+                                    <label className="form-label">Start Location*</label>
 
                                     <Select value={startLocation} className='w-100' onChange={(e) => { setStartLocation(e) }}>
                                         <Option disabled value={null}>
@@ -148,9 +146,9 @@ const Services = () => {
                                     </Select>
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Destination Location *</label>
+                                    <label className="form-label">Destination Location*</label>
 
-                                    <Select value={startLocation} className='w-100' onChange={(e) => { setDestinationLocation(e) }}>
+                                    <Select value={destinationLocation} className='w-100' onChange={(e) => { setDestinationLocation(e) }}>
                                         <Option disabled value={null}>
                                             Select any option
                                         </Option>
@@ -175,7 +173,7 @@ const Services = () => {
                                     <label className="form-label">Shipment Value(INR) *</label>
                                     <input type="number" value={shipmentValue} onChange={(e) => setShipmentValue(e.target.value)} className="form-control" />
                                 </div>
-                                <div className="mb-3">
+                                {/* <div className="mb-3">
 
                                     <label className="form-label d-block">Price of Shipping *</label>
                                     <input type="number" disabled value={price} onChange={(e) => setPrice(e.target.value)} className="form-control d-inline w-75" />
@@ -183,7 +181,7 @@ const Services = () => {
                                     <div id="passwordHelpBlock" className="form-text">
                                         Click on the button to calculate price of shipping..
                                     </div>
-                                </div>
+                                </div> */}
                                 <button type="submit" onClick={handleAddToPayment} className="btn btn-outline-success">Add to Cart</button>
                             </form>
                         </div>

@@ -15,6 +15,12 @@ const deliveryMappingSchema = new mongoose.Schema(
         shipping_status: {
             type: String
         },
+        arrival_time: {
+            type: Date
+        },
+        departure_time: {
+            type: Date
+        },
     },
     {
         timestamps: true

@@ -81,10 +81,10 @@ const EmployeeUpdate = () => {
     return (
         <div className='container-fluid p-3 dashboard tw-bg-lightGrey'>
             <div className='row'>
-                <div className='col-md-3'>
+                <div className='col-md-2'>
                     <AdminMenu />
                 </div>
-                <div className='col-md-9'>
+                <div className='col-md-10'>
                     <div className='card p-3 tw-bg-light'>
                         <h4 className='text-center'>Update Employee Details</h4>
                         <div className='d-flex flex-column'>

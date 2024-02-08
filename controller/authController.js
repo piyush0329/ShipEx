@@ -2,6 +2,7 @@ const employeeModel = require("../Models/employeeModel")
 const userModel = require("../Models/userModel")
 const { hashPassword, comparePassword } = require("../helpers/authHelper")
 const JWT = require('jsonwebtoken')
+require('dotenv').config()
 
 
 
@@ -84,7 +85,7 @@ const loginController = async (req, res) => {
                 message: "Invalid Password"
             })
         }
-        const token = await JWT.sign({ _id: user._id }, "ANISIFHFSFSOFSFO", {
+        const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '10d',
         })
         if (user.employeeDetails !== null) {
@@ -209,7 +210,6 @@ const userUpdateController = async (req, res) => {
         }
         const hashedPassword = password ? await hashPassword(password) : undefined
         const updatedUser = await userModel.findOneAndUpdate({ email: email }, {
-
             name: name || user.name,
             roll: roll || user.roll,
             password: hashedPassword || user.password,

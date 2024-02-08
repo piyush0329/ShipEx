@@ -49,7 +49,7 @@ const UserDashboard = () => {
     return (
         <div className='d-flex flex-column tw-bg-lightGrey'>
             <h2 className='text-center'>Update User Profile</h2>
-            <div className='border'>
+            <div className='border p-3'>
                 <form onSubmit={handleUserUpdate}>
                     <div className="mb-3">
                         <label className="form-label">Email address</label>

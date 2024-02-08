@@ -7,10 +7,10 @@ import IndexPage from '../pages/IndexPage'
 const EmployeeRoute = () => {
     const [ok, setOk] = useState(false)
     const [auth] = useAuth()
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const authCheck = async () => {
-
             try {
                 const res = await axios.get("/employee-auth")
                 if (res.data.ok) {
@@ -22,11 +22,14 @@ const EmployeeRoute = () => {
                 console.log(error)
                 setOk(false)
             }
+            finally {
+                setLoading(false)
+            }
         }
         if (auth?.token) authCheck()
     }, [auth?.token])
 
-    return ok ? <Outlet /> : <IndexPage />
+    return !loading ? ok ? <Outlet /> : <IndexPage /> : ''
 
 }
 
