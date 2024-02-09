@@ -1,27 +1,26 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {  NavLink } from 'react-router-dom'
 
 const EmployeeMenu = () => {
   return (
     <div>
       <div className="text-center">
         <div className="list-group">
-          <div className='list-group-item bg-secondary text-white'><h4>Employee Panel</h4></div>
-          <Link
+          <NavLink
             to="/dashboard/employee"
-            className="list-group-item list-group-item-action tw-bg-lightpink">
+            className={({ isActive }) => `list-group-item ${isActive ?"bg-secondary text-white":"tw-bg-lightpink"}`}>
             Employee Details
-          </Link>
-          <Link
-            to="/dashboard/employee/update-employee"
-            className="list-group-item list-group-item-action tw-bg-lightpink">
+          </NavLink>
+          <NavLink
+            to="/dashboard/update-employee"
+            className={({ isActive }) => `list-group-item ${isActive ?"bg-secondary text-white":"tw-bg-lightpink"}`}>
             Update Employee Details
-          </Link>
-          <Link
-            to="/dashboard/employee/order-status"
-            className="list-group-item list-group-item-action tw-bg-lightpink">
+          </NavLink>
+          <NavLink
+            to="/dashboard/order-status"
+            className={({ isActive }) => `list-group-item ${isActive ?"bg-secondary text-white":"tw-bg-lightpink"}`}>
             Update Order Status
-          </Link>
+          </NavLink>
 
         </div>
       </div>

@@ -1,8 +1,9 @@
 const express = require('express')
-const { requireSignIn, isAdmin, isEmployee } = require('../middleware/authMiddleware')
+require('dotenv').config()
+const { requireSignIn, isAdmin, isEmployee, cacheMiddleware } = require('../middleware/authMiddleware')
 const { addOrderController, getBuyerOrders, getAllOrdersController, getEmployeeAllOrdersController, orderStatusController, employeeOrderStatusController, getPaginationOrderController, getExcelSheetController, getInvoiceController, checkoutController,orderStatsController, refundController, getDeliveryOrdersController } = require('../controller/orderController')
 const orderRouter = express.Router()
-const stripe = require('stripe')('sk_test_51OZSAbSB0wwAWHZh7j03Dz8PIxm8eqfQGaGHVCbnAhTqwpKLV3YP5FEpA4ttyDFmVun8QeT0J3jwmwX0gqvApwW800srmgFa07')
+const stripe = require('stripe')('process.env.STRIPE_SECRET_KEY')
 
 
 //api is used to add the orders to order model

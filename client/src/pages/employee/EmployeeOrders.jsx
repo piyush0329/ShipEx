@@ -49,13 +49,13 @@ const EmployeeOrders = () => {
     }
 
     return (
-        <div className='container-fluid p-3 tw-bg-lightGrey'>
+        <div className='container-fluid tw-bg-lightGrey'>
 
             <div className='row'>
-                <div className="col col-md-2">
+                <div className="col col-md-2 p-0">
                     <EmployeeMenu />
                 </div>
-                <div className='col-md-10'>
+                <div className='col-md-10 p-0'>
                     <h1 className='text-center'>All Orders</h1>
                     {orders?.map((o, i) => {
                         return (

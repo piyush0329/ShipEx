@@ -99,7 +99,7 @@ const addProductController = async (req, res) => {
         let c = 2 * Math.asin(Math.sqrt(a));
         let r = 6371;
         const distance = c * r
-        const price = ((distance * 1.5) + (weight * 5) + ((shipmentValue * 1) / 100))
+        const price = ((distance * 1.5) + (weight * 5) + ((shipmentValue * 1) / 100)).toFixed(2)
         const existinguser = await productModel.findOne({ userid: userid })
         if (!existinguser) {
             const product = await new productModel({ startLocation, destinationLocation, weight, description, shipmentValue, price, userid }).save()

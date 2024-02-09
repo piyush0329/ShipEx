@@ -30,6 +30,7 @@ import OrderStats from './pages/Admin/OrderStats';
 import AddVehicle from './pages/Admin/AddVehicle';
 import DeliveryOrderMapping from './pages/Admin/DeliveryOrderMapping';
 import StatusLog from './pages/Admin/StatusLog';
+import UpdateVehicleDetails from './pages/Admin/UpdateVehicleDetails';
 
 
 axios.defaults.baseURL = process.env.REACT_APP_BASE_URL
@@ -48,29 +49,30 @@ function App() {
         <Route path='/cart' element={<CartPage />} />
         <Route path='/shipex' element={<Private />} >
           <Route path='services' element={<Services />} />
-          <Route path='services/orders' element={<Orders />} />
+          <Route path='orders' element={<Orders />} />
         </Route>
         <Route path='/dashboard' element={<UserRoute />} >
           <Route path='user' element={<UserDashboard />} />
         </Route>
         <Route path='/dashboard' element={<AdminRoute />}>
           <Route path='admin' element={<AdminDashboard />} />
-          <Route path='admin/admin-profile' element={<AdminUpdate />} />
-          <Route path='admin/user-update' element={<UserUpdate />} />
-          <Route path='admin/employee-update' element={<EmployeeUpdate />} />
-          <Route path='admin/create-employee' element={<CreateEmployee />} />
-          <Route path='admin/create-office' element={<CreateOffice />} />
-          <Route path='admin/add-vehicle' element={<AddVehicle />} />
-          <Route path='admin/update-orders' element={<AdminOrders />} />
-          <Route path='admin/order-details' element={<OrderDetails />} />
-          <Route path='admin/order-stats' element={<OrderStats />} />
-          <Route path='admin/delivery' element={<DeliveryOrderMapping />} />
-          <Route path='admin/status-log' element={<StatusLog />} />
+          <Route path='admin-profile' element={<AdminUpdate />} />
+          <Route path='user-update' element={<UserUpdate />} />
+          <Route path='employee-update' element={<EmployeeUpdate />} />
+          <Route path='create-employee' element={<CreateEmployee />} />
+          <Route path='create-office' element={<CreateOffice />} />
+          <Route path='add-vehicle' element={<AddVehicle />} />
+          <Route path='update-vehicle' element={<UpdateVehicleDetails />} />
+          <Route path='update-orders' element={<AdminOrders />} />
+          <Route path='order-details' element={<OrderDetails />} />
+          <Route path='order-stats' element={<OrderStats />} />
+          <Route path='delivery' element={<DeliveryOrderMapping />} />
+          <Route path='status-log' element={<StatusLog />} />
         </Route>
         <Route path='/dashboard' element={<EmployeeRoute />}>
           <Route path='employee' element={<EmployeeDashboard />} />
-          <Route path='employee/update-employee' element={<UpdateDetails />} />
-          <Route path='employee/order-status' element={<EmployeeOrders />} />
+          <Route path='update-employee' element={<UpdateDetails />} />
+          <Route path='order-status' element={<EmployeeOrders />} />
         </Route>
       </Route>
 

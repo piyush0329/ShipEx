@@ -57,12 +57,12 @@ const UpdateDetails = () => {
         }
     }
     return (
-        <div className='container-fluid p-3 tw-bg-lightGrey'>
+        <div className='container-fluid tw-bg-lightGrey'>
             <div className='row'>
-                <div className="col-12 col-md-2">
+                <div className="col-12 col-md-2 p-0">
                     <EmployeeMenu />
                 </div>
-                <div className="col-12 col-md-10">
+                <div className="col-12 col-md-10 p-0">
                     <div className='card p-3 tw-bg-light'>
                         <div className="mt-3">
                             <h2 className='text-center'>Update Employee Profile</h2>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../context/auth'
 import { useCart } from '../context/cart'
 
@@ -28,64 +28,65 @@ const Header = () => {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <Link to={'/'} className="nav-link active text-white" aria-current="page" >Home</Link>
+                                <NavLink to={'/'} className={({ isActive }) => `nav-link ${isActive ? 'tw-text-blue-300' : 'text-white'}`} aria-current="page" >Home</NavLink>
                             </li>
                             <li className="nav-item">
-                                <Link to={'/about'} className="nav-link text-white" >About</Link>
+                                <NavLink to={'/about'} className={({ isActive }) => `nav-link ${isActive ? 'tw-text-blue-300' : 'text-white'}`} >About</NavLink>
                             </li>
 
                             {
                                 !auth.user ? (<>
 
                                     <li>
-                                        <Link to="/register" className="nav-link text-white">Register
-                                        </Link>
+                                        <NavLink to="/register" className={({ isActive }) => `nav-link ${isActive ? 'tw-text-blue-300' : 'text-white'}`}>Register
+                                        </NavLink>
                                     </li>
                                     <li>
-                                        <Link to="/login" className="nav-link text-white">
+                                        <NavLink to="/login" className={({ isActive }) => `nav-link ${isActive ? 'tw-text-blue-300' : 'text-white'}`}>
                                             Login
-                                        </Link>
+                                        </NavLink>
                                     </li>
                                     <li>
-                                        <Link to={'/cart'} className='nav-link '>
-                                            <div className="tw-p-0 tw-bg-red text-white tw-border-none">
+                                        <NavLink to={'/cart'} className={({ isActive }) => `nav-link ${isActive ? 'tw-text-blue-300' : 'text-white'}`}>
+                                            <div className="tw-p-0 tw-bg-red tw-border-none">
                                                 Cart
                                                 <span className="tw-badge tw-rounded-full">{cart.length}</span>
                                             </div>
-                                        </Link>
+                                        </NavLink>
                                     </li>
 
                                 </>
                                 ) : (
                                     <>
                                         <li className="nav-item text-white" >
-                                            <Link to="/shipex/services/orders" className="nav-link text-white">
+                                            <NavLink to="/shipex/orders" className={({ isActive }) => `nav-link ${isActive ? 'tw-text-blue-300' : 'text-white'}`}>
                                                 My Orders
-                                            </Link>
+                                            </NavLink>
                                         </li>
                                         <li className="nav-item text-white" >
-                                            <Link to="/shipex/services" className="nav-link text-white">
+                                            <NavLink to="/shipex/services" className={({ isActive }) => `nav-link ${isActive ? 'tw-text-blue-300' : 'text-white'}`}>
                                                 Services
-                                            </Link>
+                                            </NavLink>
                                         </li>
                                         <li className="nav-item" >
-                                            <Link to={'/'} className='nav-link'>{auth?.user?.name}</Link>
+                                            <div className='nav-link'>{auth?.user?.name}</div>
                                         </li>
                                         <li className="nav-item">
-                                            <Link to={`/dashboard/${auth?.user?.role === 1 ? 'admin' : auth?.user?.role === 2 ? 'employee' : 'user'}`} className="nav-link text-white" >Dashboard</Link>
+                                            <NavLink to={`/dashboard/${auth?.user?.role === 1 ? 'admin' : auth?.user?.role === 2 ? 'employee' : 'user'}`} className={({isActive})=>`nav-link ${isActive?'tw-text-blue-300':'text-white'}`} >Dashboard</NavLink>
+                                            
                                         </li>
                                         <li className='nav-item'>
-                                            <Link to={'/cart'} className='nav-link '>
-                                                <div className="tw-p-0 tw-bg-red text-white tw-border-none">
+                                            <NavLink to={'/cart'} className={({ isActive }) => `nav-link ${isActive ? 'tw-text-blue-300' : 'text-white'}`}>
+                                                <div className="tw-p-0 tw-bg-red tw-border-none">
                                                     Cart
                                                     <span className="tw-badge tw-rounded-full">{cart.length}</span>
                                                 </div>
-                                            </Link>
+                                            </NavLink>
                                         </li>
                                         <li className='nav-item'>
-                                            <Link to="/login" onClick={handleLogout} className="nav-link text-white">
+                                            <NavLink to="/login" onClick={handleLogout} className={({ isActive }) => `nav-link ${isActive ? 'tw-text-blue-300' : 'text-white'}`}>
                                                 Logout
-                                            </Link>
+                                            </NavLink>
                                         </li>
                                     </>
                                 )

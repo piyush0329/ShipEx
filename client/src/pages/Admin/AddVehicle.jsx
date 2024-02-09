@@ -35,12 +35,12 @@ const AddVehicle = () => {
         }
     }
     return (
-        <div className='container-fluid p-3 dashboard tw-bg-lightGrey'>
+        <div className='container-fluid dashboard tw-bg-lightGrey'>
             <div className='row'>
-                <div className='col-md-2 tw-h-full'>
+                <div className='col-md-2 p-0 tw-h-full'>
                     <AdminMenu />
                 </div>
-                <div className='col-md-10'>
+                <div className='col-md-10 p-0'>
                     <div className='card p-3 tw-bg-light'>
                         <h4 className='text-center'>Add Vehicle</h4>
                         <div className='d-flex flex-column'>

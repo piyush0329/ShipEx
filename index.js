@@ -3,6 +3,7 @@ const connectDB = require('./db')
 const cors = require('cors')
 const compression = require('compression')
 const morgan = require('morgan')
+const cache =  require('memory-cache')
 const { authRouter } = require('./Router/authRoutes')
 const { officeRouter } = require('./Router/officeRoutes')
 const { productRouter } = require('./Router/productRoutes')
@@ -18,6 +19,7 @@ app.use(cors({
     credentials: true,
     origin: 'http://localhost:3000'
 }))
+
 
 app.post('/webhook', express.raw({ type: 'application/json' }), webhookController);
 app.use(express.json())

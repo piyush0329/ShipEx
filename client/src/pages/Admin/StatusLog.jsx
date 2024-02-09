@@ -14,7 +14,7 @@ const StatusLog = () => {
     const [selectedOffice, setSelectedOffice] = useState(null)
     const getVehicles = async () => {
         try {
-            const { data } = await axios.get('/get-order-vehicle')
+            const { data } = await axios.get('/get-working-vehicle')
             setVehicles(data.vehicles)
         } catch (error) {
             console.log(error)
@@ -45,8 +45,8 @@ const StatusLog = () => {
         getOffices()
     }, [])
     useEffect(() => {
-        getVehicleOrder()
-
+         getVehicleOrder()
+    // eslint-disable-next-line
     }, [selectedVehicle,vehicles])
     useEffect(() => {
         getVehicles()
@@ -73,15 +73,16 @@ const StatusLog = () => {
     }
     return (
         <>
-            <div className="container-fluid p-3 dashboard tw-bg-lightGrey">
+            <div className="container-fluid dashboard tw-bg-lightGrey">
                 <div className="row">
-                    <div className="col-12 col-md-2">
+                    <div className="col-12 col-md-2 p-0">
                         <AdminMenu />
                     </div>
 
-                    <div className="col-12 col-md-10">
+                    <div className="col-12 col-md-10 p-0">
                         <div className="card p-3 tw-bg-light">
-                            <h4>Select Vehicle:</h4>
+                            <h4 className='text-center'>Create Current Location Log</h4>
+                            <div>Select Vehicle:</div>
                             <Select value={selectedVehicle} className='tw-min-w-80' onChange={(e) => { setSelectedVehicle(e); }}>
                                 <Option disabled value={null}>
                                     Select any option

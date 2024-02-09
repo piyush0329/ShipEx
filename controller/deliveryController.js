@@ -36,11 +36,8 @@ const getVehiclesController = async (req, res) => {
         const vehicles = await vehicleModel.find({ status: "Free" });
 
         // const deliveryMapping = await deliveryMappingModel.find()
-
         // const deliveryMappingIds = deliveryMapping.map(mapping => mapping.vehicleId.toString());
         // const filteredVehicles = vehicles.filter(vehicle => !deliveryMappingIds.includes(vehicle._id.toString()));
-
-
         res.status(200).send({
             success: true,
             message: "Vehicles Fetched Successfully",
@@ -58,9 +55,6 @@ const getVehiclesController = async (req, res) => {
 const getOrderVehiclesController = async (req, res) => {
     try {
         const vehicles = await vehicleModel.find({ status: "Working" });
-
-
-
         res.status(200).send({
             success: true,
             message: "Vehicles Fetched Successfully",
@@ -91,6 +85,58 @@ const getSingleVehicleController = async (req, res) => {
             message: "Error in getting Vehicles",
             error
         })
+    }
+}
+const getAllVehiclesController = async (req,res)=>{
+    try {
+        const vehicles = await vehicleModel.find({})
+        res.status(200).send({
+            success:true,
+            message:"Vehicles fetched Successfully",
+            vehicles
+        })
+        
+    } catch (error) {
+        res.status(500).send({
+            success:false,
+            message:"Error in Getting Vehicles",
+            error
+        })
+        
+    }
+}
+const updateVehicleController = async (req,res)=>{
+    try {
+        const {vehicleNo,capacity,driver,model} = req.body
+        if(!vehicleNo){
+            return res.status(400).send({
+                success:false,
+                message:'vehicle number is not available',
+            })
+        }
+        const vehicle = await vehicleModel.findOne({vehicleNo:vehicleNo})
+
+        const updatedVehicle = await vehicleModel.findOneAndUpdate({vehicleNo:vehicleNo},{
+            vehicleNo: vehicleNo || vehicle.vehicleNo ,
+            capacity:capacity || vehicle.capacity ,
+            model: model || vehicle.model ,
+            driver: driver || vehicle.driver ,
+            status:vehicle.status
+        },{new:true})
+
+        res.status(200).send({
+            success:true,
+            message:"Vehicles Updated Successfully",
+            updatedVehicle
+        })
+        
+    } catch (error) {
+        res.status(500).send({
+            success:false,
+            message:"Error in Getting Vehicles",
+            error
+        })
+        
     }
 }
 const orderMappingController = async (req, res) => {
@@ -220,6 +266,8 @@ module.exports.createVehicleController = createVehicleController
 module.exports.getVehiclesController = getVehiclesController
 module.exports.getOrderVehiclesController = getOrderVehiclesController
 module.exports.getSingleVehicleController = getSingleVehicleController
+module.exports.getAllVehiclesController =  getAllVehiclesController
+module.exports.updateVehicleController =  updateVehicleController
 module.exports.orderMappingController = orderMappingController
 module.exports.getVehicleOrderController = getVehicleOrderController
 module.exports.orderLogsController = orderLogsController

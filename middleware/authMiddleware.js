@@ -1,5 +1,7 @@
 const JWT = require('jsonwebtoken')
 const userModel = require('../Models/userModel')
+const cache = require('memory-cache')
+
 
 
 const requireSignIn = async (req, res, next) => {
@@ -83,8 +85,26 @@ const isUser = async (req, res, next) => {
 }
 
 
+// const cacheMiddleware = (req, res, next) => {
+//     const key = '__express__' + req.originalUrl || req.url;
+//     const cachedResponse = cache.get(key);
+//     if (cachedResponse) {
+//       res.send(cachedResponse);
+
+//     } else {
+//       res.sendResponse = res.send;
+//       res.send = (body) => {
+//         cache.put(key, body);
+//         res.sendResponse(body);
+//       };
+//       next();
+//     }
+//   };
+
+
 
 module.exports.requireSignIn = requireSignIn
 module.exports.isAdmin = isAdmin
 module.exports.isEmployee = isEmployee
 module.exports.isUser = isUser
+// module.exports.cacheMiddleware = cacheMiddleware

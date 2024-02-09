@@ -9,13 +9,13 @@ const AdminDashboard = () => {
   return (
 
     <>
-      <div className="container-fluid p-3 dashboard tw-bg-lightGrey">
+      <div className="container-fluid dashboard tw-bg-lightGrey">
         <div className="row">
-          <div className="col-12 col-md-2">
+          <div className="col-12 col-md-2 p-0">
             <AdminMenu />
           </div>
 
-          <div className="col-12 col-md-10">
+          <div className="col-12 col-md-10 p-0">
             <div className="card p-3 tw-bg-light">
               <h5> Admin Name: {auth?.user?.name}</h5>
               <h5> Admin Email: {auth?.user?.email}</h5>

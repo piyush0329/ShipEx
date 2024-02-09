@@ -5,7 +5,7 @@ import Footer from './component/Footer'
 
 const Layout = () => {
   return (
-    <div className=''>
+    <div className='tw-flex tw-flex-col'>
       <Header/>
       <Outlet/>
       <Footer/>
