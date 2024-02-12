@@ -121,7 +121,9 @@ const Orders = () => {
                             <p><strong>Start Location:</strong> {o.startLocation.officeName}</p>
                             <p><strong>Destination Location:</strong> {o.destinationLocation.officeName}</p>
                             <p><strong>Shipping Charge:</strong> ₹{p.price}</p>
-                            {o.expectedDelivery != null ? <p>Expected Delivery {moment(o?.expectedDelivery).format("DD-MM-YYYY")}</p> : ""}
+                            {
+                              o.status!=='Delivered'?o.expectedDelivery != null ? <p>Expected Delivery {moment(o?.expectedDelivery).format("DD-MM-YYYY")}</p> : "":''
+                            }
                           </div>
                           <div className=''>
                             <div className="row">

@@ -6,6 +6,7 @@ const moment = require('moment')
 const ejs = require('ejs');
 const path = require('path');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const nodemailer = require('nodemailer')
 const userModel = require("../Models/userModel");
 const paymentModel = require("../Models/paymentModel")
 const productModel = require("../Models/productModel");
@@ -72,7 +73,7 @@ const getBuyerOrders = async (req, res) => {
                     })
                 }
             }
-            const logs = await orderLogModel.find({ orderId: order._id })
+            const logs = await orderLogModel.find({ orderId: order._id }).sort({createdAt:-1})
             const expectedDel = await deliveryMappingModel.findOne({ orders: order._id })
 
             const ord = await orderModel.findOneAndUpdate({ _id: order._id }, {
@@ -216,8 +217,8 @@ const getExcelSheetController = async (req, res) => {
 const getEmployeeAllOrdersController = async (req, res) => {
     try {
         const { page, limit } = req.query
-        const orders = await orderModel.find({$or: [{ status: "Shipped" },{ status: "Out for delivery" },{ status: "Delivered" }]}).skip((page - 1) * limit).limit(limit).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
-        const orderlength = (await orderModel.find({$or: [{ status: "Shipped" },{ status: "Out for delivery" },{ status: "Delivered" }]}).populate("buyer", "name").sort({ createdAt: -1 })).length
+        const orders = await orderModel.find({ $or: [{ status: "Shipped" }, { status: "Out for delivery" }, { status: "Delivered" }] }).skip((page - 1) * limit).limit(limit).populate('startLocation', ['officeName']).populate('destinationLocation', ['officeName']).populate("buyer", "name").sort({ createdAt: -1 })
+        const orderlength = (await orderModel.find({ $or: [{ status: "Shipped" }, { status: "Out for delivery" }, { status: "Delivered" }] }).populate("buyer", "name").sort({ createdAt: -1 })).length
         res.status(200).send({
             success: true,
             orders,
@@ -301,6 +302,14 @@ const getInvoiceController = async (req, res) => {
     try {
         const { o } = req.body
         const buyer = await userModel.findOne({ _id: o.buyer })
+
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'upadhyaypiyush29@gmail.com',
+                pass: 'xolipgcikkpbripl'
+            }
+        });
         const invoiceData = {
             invoiceNumber: `${o._id}${moment().format('DDMMYYYY')}`,
             products: o.products,
@@ -308,8 +317,9 @@ const getInvoiceController = async (req, res) => {
             buyer: buyer
         }
         const template = await ejs.renderFile('invoice.ejs', { ...invoiceData, moment })
+        const attachment = await ejs.renderFile('attachment.ejs', { ...invoiceData, moment })
         const pdfOptions = { format: 'Letter' }
-        pdf.create(template, pdfOptions).toFile('invoice.pdf', (err, result) => {
+        pdf.create(attachment, pdfOptions).toFile('invoice.pdf', (err, result) => {
             if (err) {
                 console.error('Error creating PDF:', err)
                 res.status(500).send({
@@ -319,10 +329,36 @@ const getInvoiceController = async (req, res) => {
                 });
             } else {
                 console.log('PDF created successfully:', result)
-                res.sendFile('invoice.pdf', { root: 'C:\\Users\\HSTPL_LAP_008\\Documents\\Learnings\\ShipEx' })
             }
         });
 
+        var mailOptions = {
+            from: 'upadhyaypiyush29@gmail.com',
+            to: 'upadhyaypiyush29@gmail.com',
+            subject: 'Invoice of your product',
+            html: template,
+            attachments: [{'filename': 'invoice.pdf',
+            path: 'C:\\Users\\HSTPL_LAP_008\\Documents\\Learnings\\ShipEx\\invoice.pdf',
+            contentType: 'application/pdf'}]
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                res.status(500).send({
+                    success: false,
+                    message: 'Error in sending mail',
+                    error
+                })
+            } else {
+                const response = info.response
+                console.log('Email sent: ' + info.response);
+                res.status(200).send({
+                    success: true,
+                    message: 'Email Sent Successfully',
+                    response
+                })
+            }
+        });
     } catch (error) {
         console.log(error)
         res.status(500).send({
@@ -477,7 +513,7 @@ const refundController = async (req, res) => {
         const refundDetails = await stripe.refunds.retrieve(refund.id)
         const updateOrder = await orderModel.findOneAndUpdate({ _id: order._id }, {
             status: 'Cancelled',
-            expectedDelivery:null,
+            expectedDelivery: null,
             payment: "Refunded",
             refundDetails: {
                 destination_details: refundDetails.destination_details,
