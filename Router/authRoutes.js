@@ -6,12 +6,15 @@ const authRouter = express.Router()
 
 //api to register the user
 authRouter.post("/register", registerController)
+
 //api to login
 authRouter.post('/login', loginController)
+
 //api to validate login person as user
 authRouter.get('/user-auth', requireSignIn, isUser, (req, res) => {
     res.status(200).send({ ok: true })
 })
+
 //api to validate whether a person is logged in or not
 authRouter.get('/auth', requireSignIn, (req, res) => {
     res.status(200).send({ ok: true })

@@ -85,7 +85,7 @@ const loginController = async (req, res) => {
                 message: "Invalid Password"
             })
         }
-        const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
+        const token = await JWT.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, {
             expiresIn: '10d',
         })
         if (user.employeeDetails !== null) {
@@ -204,7 +204,7 @@ const loadUserController = async (req, res) => {
 const userUpdateController = async (req, res) => {
     try {
         const { email, name, roll, classname, password, role, gender, phone, dob } = req.body
-        const user = await userModel.findOne({ email })
+        const user = await userModel.findOne({ email: email })
         if (!password || password.length < 6) {
             return res.json({ error: "Password is required and 6 character long" })
         }
@@ -267,7 +267,7 @@ const employeeUpdateController = async (req, res) => {
     try {
 
         const { email, name, roll, classname, role, password, gender, phone, dob, aadharNumber, dlNumber, address } = req.body
-        const user = await userModel.findOne({ email })
+        const user = await userModel.findOne({ email: email })
         if (!password || password.length < 6) {
             return res.json({ error: "Password is required and 6 character long" })
         }
@@ -309,8 +309,8 @@ const employeeUpdateController = async (req, res) => {
 }
 const ControllerUser = async (req, res) => {
     try {
-        const { name, roll, classname, password, phone, gender, dob } = req.body
-        const user = await userModel.findById(req.user._id)
+        const { name, roll, email, classname, password, phone, gender, dob } = req.body
+        const user = await userModel.findOne({ email: email })
         if (!password || password.length < 6) {
             return res.json({ error: "Password is required and 6 character long" })
         }
@@ -340,8 +340,8 @@ const ControllerUser = async (req, res) => {
 }
 const ControllerAdmin = async (req, res) => {
     try {
-        const { name, roll, classname, password, phone, gender, dob, aadharNumber, dlNumber, address } = req.body
-        const user = await userModel.findById(req.user._id)
+        const { name, roll, classname, email, password, phone, gender, dob, aadharNumber, dlNumber, address } = req.body
+        const user = await userModel.findOne({ email: email })
         if (!password || password.length < 6) {
             return res.json({ error: "Password is required and 6 character long" })
         }
@@ -383,7 +383,7 @@ const ControllerAdmin = async (req, res) => {
 const ControllerEmployee = async (req, res) => {
     try {
         const { name, roll, classname, email, password, dob, phone, gender, aadharNumber, dlNumber, address } = req.body
-        const user = await userModel.findById(req.user._id)
+        const user = await userModel.findOne({ email: email })
         if (!password || password.length < 6) {
             return res.json({ error: "Password is required and 6 character long" })
         }
@@ -400,9 +400,9 @@ const ControllerEmployee = async (req, res) => {
         const employee = await employeeModel.findById({ _id: user.employeeDetails })
 
         const updatedEmployee = await employeeModel.findByIdAndUpdate(employee._id, {
-            aadharNumber: aadharNumber || user.aadharNumber,
-            dlNumber: dlNumber || user.dlNumber,
-            address: address || user.address,
+            aadharNumber: aadharNumber || employee.aadharNumber,
+            dlNumber: dlNumber || employee.dlNumber,
+            address: address || employee.address,
         }, { new: true })
         res.status(200).send({
             success: true,
@@ -459,7 +459,6 @@ const createEmployeeController = async (req, res) => {
         if (!role) {
             return res.send({ message: "Role is required" })
         }
-
         const existingUser = await userModel.findOne({ email })
         if (existingUser) {
             return res.status(200).send({

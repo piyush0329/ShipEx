@@ -4,7 +4,7 @@ const orderLogSchema = new mongoose.Schema(
     {
         orderId: {
             type: mongoose.ObjectId,
-            ref: 'vehicles'
+            ref: 'orders'
         },
         location:{
             type: mongoose.ObjectId,

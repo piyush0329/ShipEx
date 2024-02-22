@@ -116,13 +116,20 @@ const updateVehicleController = async (req,res)=>{
         }
         const vehicle = await vehicleModel.findOne({vehicleNo:vehicleNo})
 
-        const updatedVehicle = await vehicleModel.findOneAndUpdate({vehicleNo:vehicleNo},{
-            vehicleNo: vehicleNo || vehicle.vehicleNo ,
-            capacity:capacity || vehicle.capacity ,
-            model: model || vehicle.model ,
-            driver: driver || vehicle.driver ,
-            status:vehicle.status
-        },{new:true})
+        if(vehicle.status!=="Working"){
+            const updatedVehicle = await vehicleModel.findOneAndUpdate({vehicleNo:vehicleNo},{
+                vehicleNo: vehicleNo || vehicle.vehicleNo ,
+                capacity:capacity || vehicle.capacity ,
+                model: model || vehicle.model ,
+                driver: driver || vehicle.driver ,
+                status:vehicle.status
+            },{new:true})
+        }else{
+           return res.status(200).send({
+                success:false,
+                message:"Vehicle is in working stage can't update right now"
+            })
+        }
 
         res.status(200).send({
             success:true,
